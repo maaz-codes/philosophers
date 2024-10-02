@@ -6,7 +6,7 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 18:45:32 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/02 22:28:07 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/02 22:38:38 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,14 +25,6 @@ int forks_available(t_philo *philo)
 		return (0);
 }
 
-void eating(t_philo *philo, int index)
-{	
-	// pthread_mutex_lock(&philo->info->print_locks[index]);
-	printf("\033[1;33m %i IS EATING...\n\033[0m", philo->id);
-	// pthread_mutex_unlock(&philo->info->print_locks[index]);
-	usleep(philo->info->time_to_eat * 100 * 1000);
-}
-
 void *dinning_table(void *args)
 {
 	t_philo *philo;
@@ -46,7 +38,10 @@ void *dinning_table(void *args)
 		printf("\033[1;34m %i HAS TAKEN A FORK \033[0m\n", philo->id);
 		printf("\033[1;34m %i HAS TAKEN A FORK \033[0m\n", philo->id);
 		eating(philo, philo->id - 1);
+		sleeping(philo, philo->id - 1);
 	}
+	else 
+		thinking(philo, philo->id - 1);
 	pthread_mutex_unlock(&philo->info->fork_locks[philo->id - 1]);
 	return (args);
 }

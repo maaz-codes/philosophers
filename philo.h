@@ -6,7 +6,7 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 18:49:01 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/02 22:10:26 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/02 22:39:28 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,4 +84,9 @@ void 				free_array(int *array);
 // init
 void				init_info(char *argv[], t_info *info, pthread_mutex_t *fork_locks, pthread_mutex_t *print_locks);
 void 				init_philo(char **argv, t_philo *philo, t_info *info, int index);
+
+// routines
+void eating(t_philo *philo, int index);
+void sleeping(t_philo *philo, int index);
+void thinking(t_philo *philo, int index);
 #endif
