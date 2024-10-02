@@ -6,7 +6,7 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 10:10:54 by maakhan           #+#    #+#             */
-/*   Updated: 2024/09/30 16:50:42 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/01 19:54:48 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,17 @@ static int	is_number(char c)
 		return (0);
 }
 
-int	parsing(int argc, char *argv[])
+static void check_args(char *argv[])
+{
+	
+	if (ft_atoi(argv[1]) > 200 || ft_atoi(argv[2]) < 60
+	 || ft_atoi(argv[3]) < 60 ||  ft_atoi(argv[4]) < 60)
+	{
+		ft_error(WRONG_ARGS);
+	}
+}
+
+void parsing(int argc, char *argv[])
 {
 	int	i;
 	int	j;
@@ -32,10 +42,10 @@ int	parsing(int argc, char *argv[])
 		while (argv[i][j])
 		{
 			if (!is_number(argv[i][j]))
-				ft_error('c');
+				ft_error(WRONG_CHARS);
 			j++;
 		}
 		i++;
 	}
-	return (1);
+	check_args(argv);
 }

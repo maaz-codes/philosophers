@@ -6,7 +6,7 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 18:45:50 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/02 18:53:18 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/02 19:08:59 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ static int *init_forks(int fork_count)
 	return (forks);
 }
 
-void init_philo_info(char *argv[], t_info *info, pthread_mutex_t *fork_locks)
+void init_info(char *argv[], t_info *info, pthread_mutex_t *fork_locks)
 {
 	int i;
 

@@ -3,6 +3,7 @@ NAME 		= 	philo
 SRC 		= 	philo.c \
 				parsing.c \
 				errors.c \
+				init.c \
 				libft/ft_atoi.c libft/ft_split.c libft/ft_strjoin.c libft/ft_strlen.c libft/ft_strncmp.c \
 
 OBJ = $(SRC:.c=.o)

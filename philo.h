@@ -6,7 +6,7 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 18:49:01 by maakhan           #+#    #+#             */
-/*   Updated: 2024/09/30 16:44:39 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/02 19:09:10 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@
 # include <pthread.h>
 # include <stdio.h>
 # include <stdlib.h>
+# include <sys/time.h>
 # include <unistd.h>
-#include <sys/time.h>
 
 // COLORS
 # define RED "RED"
@@ -29,29 +29,42 @@
 # define BLUE "BLUE"
 # define WHITE "WHITE"
 
-typedef struct	s_fork
-{
-	int taken;
-}				t_fork;				
+// general
+# define MAX_PHILOS 	200
+# define TRUE  			1
+# define FALSE			0
+# define EXIT_FAILURE 	1
+# define EXIT_SUCCESS 	0
 
-typedef struct 	s_philo
-{
-	int id;
-	int has_forks;
-}				t_philo;
+// error flags
+# define WRONG_FORMAT	1001
+# define WRONG_CHARS	1002
+# define WRONG_ARGS		1003
+# define MUTEX_F		1004
 
-typedef struct 	s_philos_info
+typedef struct s_info
 {
 	int				philo_count;
 	int				time_to_die;
 	int				time_to_eat;
 	int				time_to_sleep;
 	int				meal_count;
-	int 			fork_count;
-	t_philo			philo[200];
-	t_fork			fork[200];
-	pthread_mutex_t	mutex;
-}					t_philos_info;
+	int 			*forks;
+	pthread_mutex_t	*fork_locks;
+	pthread_mutex_t	*write_lock;
+	int 			all_alive;
+}					t_info;
+
+typedef struct s_philo
+{
+	t_info			*info;
+	int				id;
+	int				own_fork;
+	int				other_fork;
+	int				meal_count;
+	long long       last_meal_time;
+	pthread_t		thread;
+}					t_philo;
 
 // libft
 int					ft_atoi(const char *str);
@@ -61,10 +74,13 @@ size_t				ft_strlen(const char *str);
 int					ft_strncmp(const char *s1, const char *s2, size_t n);
 
 // parsing
-int					parsing(int argc, char *argv[]);
+void					parsing(int argc, char *argv[]);
 
 // errors
-void				ft_error(char flag);
-void				colored_printf(char *str, char *color);
+void				ft_error(int flag);
+void 				free_array(int *array);
 
+// init
+void				init_info(char *argv[], t_info *info, pthread_mutex_t *fork_locks);
+void 				init_philo(char **argv, t_philo *philo, t_info *info, int i);
 #endif
