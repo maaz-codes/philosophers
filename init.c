@@ -6,7 +6,7 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 18:45:50 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/02 19:08:59 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/02 21:47:39 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,14 +50,19 @@ void init_info(char *argv[], t_info *info, pthread_mutex_t *fork_locks)
 	}
 }
 
-void init_philo(char **argv, t_philo *philo, t_info *info, int i)
+void init_philo(char **argv, t_philo *philo, t_info *info, int index)
 {
 	philo->info = info;
-	philo->id = i + 1;
-	philo->own_fork = i; // philo->id
-	if (philo->id == info->philo_count)
-		philo->other_fork = 0; 
-	else
-		philo->other_fork = i + 1; //(philo->id + 1)
+	philo->id = index + 1;
+	philo->own_fork = index; // philo->id
+	if (philo->id % 2 == 0) // even
+		philo->other_fork = index - 1;
+	else // odd
+	{
+		if (philo->id == info->philo_count) // last_index
+			philo->other_fork = 1; // first_index
+		else
+			philo->other_fork = index + 1;
+	}
 	philo->meal_count = info->meal_count;
 }

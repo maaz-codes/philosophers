@@ -6,22 +6,39 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 18:45:32 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/02 19:22:50 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/02 21:49:54 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+int forks_available(t_philo *philo)
+{
+	int own_fork; 
+	int other_fork;
+
+	own_fork = philo->info->forks[philo->own_fork];
+	other_fork = philo->info->forks[philo->other_fork];
+	if (own_fork == -1 && other_fork == -1)
+		return (1);
+	else
+		return (0);
+}
+
+
 
 void *dinning_table(void *args)
 {
 	t_philo *philo;
 
 	philo = (t_philo *)args;
-	// printf("id = %i | own_fork = %i | other_fork = %i\n", philo->id, philo->own_fork, philo->other_fork);
 	pthread_mutex_lock(&philo->info->fork_locks[philo->id - 1]);
-	philo->info->forks[philo->own_fork] = philo->id;
-	philo->info->forks[philo->other_fork] = philo->id;
-	printf("\033[1;34m %i GRABBED FORKS %i & %i \033[0m\n", philo->id, philo->own_fork + 1, philo->other_fork + 1);
+	if (forks_available(philo))
+	{
+		philo->info->forks[philo->own_fork] = philo->id;
+		philo->info->forks[philo->other_fork] = philo->id;
+		printf("\033[1;34m %i GRABBED FORKS %i & %i \033[0m\n", philo->id, philo->own_fork + 1, philo->other_fork + 1);
+	}
 	pthread_mutex_unlock(&philo->info->fork_locks[philo->id - 1]);
 	return (args);
 }
