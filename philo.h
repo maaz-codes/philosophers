@@ -6,7 +6,7 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 18:49:01 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/02 21:42:57 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/02 22:10:26 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@
 # define WRONG_CHARS	1002
 # define WRONG_ARGS		1003
 # define MUTEX_F		1004
+# define MUTEX_P		1005
 
 typedef struct s_info
 {
@@ -51,7 +52,7 @@ typedef struct s_info
 	int				meal_count;
 	int 			*forks;
 	pthread_mutex_t	*fork_locks;
-	pthread_mutex_t	*write_lock;
+	pthread_mutex_t	*print_locks;
 	int 			all_alive;
 }					t_info;
 
@@ -81,6 +82,6 @@ void				ft_error(int flag);
 void 				free_array(int *array);
 
 // init
-void				init_info(char *argv[], t_info *info, pthread_mutex_t *fork_locks);
+void				init_info(char *argv[], t_info *info, pthread_mutex_t *fork_locks, pthread_mutex_t *print_locks);
 void 				init_philo(char **argv, t_philo *philo, t_info *info, int index);
 #endif

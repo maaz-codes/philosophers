@@ -6,7 +6,7 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 10:06:04 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/02 18:53:33 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/02 22:11:13 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,8 @@ void	ft_error(int flag)
 	else if (flag == WRONG_ARGS)
 		printf("\033[1;31m READ THE EVALUATION SHEET CORRECTLY :) \033[0m");
 	else if (flag == MUTEX_F)
-		printf("\033[1;31m MUTEX FAILED!\033[0m");
+		printf("\033[1;31m MUTEX FOR FORK FAILED!\033[0m");
+	else if (flag == MUTEX_P)
+		printf("\033[1;31m MUTEX FOR PRINT FAILED!\033[0m");
 	exit(EXIT_FAILURE);
 }

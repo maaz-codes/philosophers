@@ -6,7 +6,7 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 18:45:32 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/02 21:49:54 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/02 22:28:07 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,13 @@ int forks_available(t_philo *philo)
 		return (0);
 }
 
-
+void eating(t_philo *philo, int index)
+{	
+	// pthread_mutex_lock(&philo->info->print_locks[index]);
+	printf("\033[1;33m %i IS EATING...\n\033[0m", philo->id);
+	// pthread_mutex_unlock(&philo->info->print_locks[index]);
+	usleep(philo->info->time_to_eat * 100 * 1000);
+}
 
 void *dinning_table(void *args)
 {
@@ -37,24 +43,47 @@ void *dinning_table(void *args)
 	{
 		philo->info->forks[philo->own_fork] = philo->id;
 		philo->info->forks[philo->other_fork] = philo->id;
-		printf("\033[1;34m %i GRABBED FORKS %i & %i \033[0m\n", philo->id, philo->own_fork + 1, philo->other_fork + 1);
+		printf("\033[1;34m %i HAS TAKEN A FORK \033[0m\n", philo->id);
+		printf("\033[1;34m %i HAS TAKEN A FORK \033[0m\n", philo->id);
+		eating(philo, philo->id - 1);
 	}
 	pthread_mutex_unlock(&philo->info->fork_locks[philo->id - 1]);
 	return (args);
+}
+
+void join_and_destroy(pthread_t *t, t_info *info, pthread_mutex_t *fork_locks, pthread_mutex_t *print_locks)
+{
+	int i;
+	
+	i = 0;
+		while (i < info->philo_count)
+		{
+			pthread_join(t[i], NULL);
+			i++;
+		}
+		i = 0;
+		while (i < info->philo_count)
+		{
+			pthread_mutex_destroy(&fork_locks[i]);
+			pthread_mutex_destroy(&print_locks[i]);
+			printf("%i, ", info->forks[i]);
+			i++;
+		}
 }
 
 int	main(int argc, char *argv[])
 {
 	t_philo			philo[MAX_PHILOS];
 	t_info  		info;
-	pthread_mutex_t fork_locks[MAX_PHILOS];
 	pthread_t		t[MAX_PHILOS];
+	pthread_mutex_t fork_locks[MAX_PHILOS];
+	pthread_mutex_t print_locks[MAX_PHILOS];
 	int i;
 
 	if (argc == 5 || argc == 6)
 	{
 		parsing(argc, argv);
-		init_info(argv, &info, fork_locks);
+		init_info(argv, &info, fork_locks, print_locks);
 		i = 0;
 		while (i < info.philo_count)
 		{
@@ -62,19 +91,7 @@ int	main(int argc, char *argv[])
 			pthread_create(&t[i], NULL, &dinning_table, (void *)&philo[i]);
 			i++;
 		}
-		i = 0;
-		while (i < info.philo_count)
-		{
-			pthread_join(t[i], NULL);
-			i++;
-		}
-		i = 0;
-		while (i < info.philo_count)
-		{
-			pthread_mutex_destroy(&fork_locks[i]);
-			printf("%i, ", info.forks[i]);
-			i++;
-		}
+		join_and_destroy(t, &info, fork_locks, print_locks);
 		return (0);
 	}
 	ft_error(WRONG_FORMAT);
