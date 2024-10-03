@@ -5,6 +5,7 @@ SRC 		= 	philo.c \
 				errors.c \
 				init.c \
 				routines.c \
+				dinning_table.c \
 				libft/ft_atoi.c libft/ft_split.c libft/ft_strjoin.c libft/ft_strlen.c libft/ft_strncmp.c \
 
 OBJ = $(SRC:.c=.o)

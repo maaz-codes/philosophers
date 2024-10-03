@@ -6,7 +6,7 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 18:45:50 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/02 22:10:09 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/03 07:26:43 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static int *init_forks(int fork_count)
 	i = 0;
 	while (i < fork_count)
 	{
-		forks[i] = -1;
+		forks[i] = 0;
 		i++;
 	}
 	return (forks);
@@ -37,7 +37,10 @@ void init_info(char *argv[], t_info *info, pthread_mutex_t *fork_locks, pthread_
 	info->time_to_die = ft_atoi(argv[2]);
 	info->time_to_eat = ft_atoi(argv[3]);
 	info->time_to_sleep = ft_atoi(argv[4]);
-	info->meal_count = 4;
+	if (argv[5])
+		info->max_meals = ft_atoi(argv[5]);
+	else
+		info->max_meals = -1;
 	info->all_alive = TRUE;
 	info->forks = init_forks(info->philo_count);
 	info->fork_locks = fork_locks;
@@ -72,5 +75,5 @@ void init_philo(char **argv, t_philo *philo, t_info *info, int index)
 		else
 			philo->other_fork = index + 1;
 	}
-	philo->meal_count = info->meal_count;
+	philo->meal_count = 0;
 }

@@ -6,7 +6,7 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 18:49:01 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/02 22:39:28 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/03 07:18:35 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ typedef struct s_info
 	int				time_to_die;
 	int				time_to_eat;
 	int				time_to_sleep;
-	int				meal_count;
+	int				max_meals;
 	int 			*forks;
 	pthread_mutex_t	*fork_locks;
 	pthread_mutex_t	*print_locks;
@@ -75,18 +75,24 @@ size_t				ft_strlen(const char *str);
 int					ft_strncmp(const char *s1, const char *s2, size_t n);
 
 // parsing
-void					parsing(int argc, char *argv[]);
+void				parsing(int argc, char *argv[]);
 
 // errors
 void				ft_error(int flag);
-void 				free_array(int *array);
+// void 				free_array(int *array);
 
 // init
 void				init_info(char *argv[], t_info *info, pthread_mutex_t *fork_locks, pthread_mutex_t *print_locks);
 void 				init_philo(char **argv, t_philo *philo, t_info *info, int index);
 
 // routines
-void eating(t_philo *philo, int index);
-void sleeping(t_philo *philo, int index);
-void thinking(t_philo *philo, int index);
+void 				eating(t_philo *philo, int index);
+void				sleeping(t_philo *philo, int index);
+void 				thinking(t_philo *philo, int index);
+
+// dinning_table
+int 				forks_available(t_philo *philo);
+void 				*dinning_table(void *args);
+void 				join_and_destroy(pthread_t *t, t_info *info, pthread_mutex_t *fork_locks, pthread_mutex_t *print_locks);
+
 #endif
