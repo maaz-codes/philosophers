@@ -6,7 +6,7 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 18:49:01 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/03 07:18:35 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/03 14:08:39 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@
 # define EXIT_FAILURE 	1
 # define EXIT_SUCCESS 	0
 
+
 // error flags
 # define WRONG_FORMAT	1001
 # define WRONG_CHARS	1002
@@ -50,6 +51,7 @@ typedef struct s_info
 	int				time_to_eat;
 	int				time_to_sleep;
 	int				max_meals;
+	int				meals_done;
 	int 			*forks;
 	pthread_mutex_t	*fork_locks;
 	pthread_mutex_t	*print_locks;
@@ -64,8 +66,16 @@ typedef struct s_philo
 	int				other_fork;
 	int				meal_count;
 	long long       last_meal_time;
+	long long		start_time;
+	int				starved;
 	pthread_t		thread;
 }					t_philo;
+
+typedef struct s_doctor
+{
+	t_info 			*info;
+	t_philo			*philo;
+}					t_doctor;
 
 // libft
 int					ft_atoi(const char *str);
@@ -95,4 +105,6 @@ int 				forks_available(t_philo *philo);
 void 				*dinning_table(void *args);
 void 				join_and_destroy(pthread_t *t, t_info *info, pthread_mutex_t *fork_locks, pthread_mutex_t *print_locks);
 
+// time
+long long 			get_exact_time();
 #endif

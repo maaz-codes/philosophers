@@ -6,11 +6,19 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 18:45:50 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/03 07:26:43 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/03 14:08:44 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+// void print_lock(long long ts, t_philo *philo, char *str)
+// {
+// 	pthread_mutex_lock(philo->info->print_locks);
+// 	printf("%lld %i %s", ts, philo->id, str);
+// 	pthread_mutex_unlock(philo->info->print_locks);
+// 	// timestamp_in_ms X has taken a fork
+// }
 
 static int *init_forks(int fork_count)
 {
@@ -41,6 +49,7 @@ void init_info(char *argv[], t_info *info, pthread_mutex_t *fork_locks, pthread_
 		info->max_meals = ft_atoi(argv[5]);
 	else
 		info->max_meals = -1;
+	info->meals_done = FALSE;
 	info->all_alive = TRUE;
 	info->forks = init_forks(info->philo_count);
 	info->fork_locks = fork_locks;
@@ -76,4 +85,6 @@ void init_philo(char **argv, t_philo *philo, t_info *info, int index)
 			philo->other_fork = index + 1;
 	}
 	philo->meal_count = 0;
+	philo->start_time = get_exact_time();
+	philo->starved = FALSE;
 }
