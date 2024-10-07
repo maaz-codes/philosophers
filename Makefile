@@ -11,7 +11,7 @@ SRC 		= 	philo.c \
 
 OBJ = $(SRC:.c=.o)
 
-CC = cc
+CC = cc #-fsanitize=thread,undefined -O3
 # CFLAGS = -Wall -Wextra -Werror
 REM		=	rm -rf
 

@@ -6,7 +6,7 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 18:49:01 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/03 14:08:39 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/07 21:13:15 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,12 +46,14 @@
 
 typedef struct s_info
 {
+	long long		start_program_time;
 	int				philo_count;
 	int				time_to_die;
 	int				time_to_eat;
 	int				time_to_sleep;
 	int				max_meals;
 	int				meals_done;
+	int				*chairs;
 	int 			*forks;
 	pthread_mutex_t	*fork_locks;
 	pthread_mutex_t	*print_locks;
@@ -62,6 +64,7 @@ typedef struct s_philo
 {
 	t_info			*info;
 	int				id;
+	int				own_chair;
 	int				own_fork;
 	int				other_fork;
 	int				meal_count;
@@ -107,4 +110,5 @@ void 				join_and_destroy(pthread_t *t, t_info *info, pthread_mutex_t *fork_lock
 
 // time
 long long 			get_exact_time();
+void 				precise_usleep(long usec);
 #endif

@@ -20,3 +20,5 @@
 18. now make your immortal philos mortal by implementing starvation
 19. learn about getting real time values and use them to track starvation and printing of timestamps
 20. create another thread for monitoring there death timing
+
+<!-- create a sanitize make rule using -fsanitize=thread,undefined -O3 -g3  -->

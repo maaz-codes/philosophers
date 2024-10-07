@@ -6,7 +6,7 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 18:45:32 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/03 13:41:25 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/07 20:48:29 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void *checkup(void *args)
 			if (time > doctor->info->time_to_die)
 			{
 				doctor->info->all_alive = FALSE;
-				printf("\033[1;36m %lld %i JUST DIED \n\033[0m", get_exact_time(), doctor->philo[i].id);
+				printf("\033[1;36m %lld %i JUST DIED \n\033[0m", get_exact_time() - doctor->info->start_program_time, doctor->philo[i].id);
 				break ;
 			}	
 			else if (doctor->philo[i].meal_count == doctor->info->max_meals)
