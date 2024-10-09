@@ -50,21 +50,17 @@ void *dinning_table(void *args)
 	t_philo *philo;
 
 	philo = (t_philo *)args;
-	while (all_alive == TRUE)
+	while (all_alive(philo) == TRUE)
 	{	
 		if (spotlight(philo) == ON)             
 		{
 			while (forks_available(philo) == FALSE)
-			{
 				precise_usleep(1);
-			}
 			write_lock(philo, "HAS TAKEN FORKS ON SPOTLIGHT:", ORANGE);
-
 			pthread_mutex_lock(&philo->info->fork_locks[philo->own_fork]);
 			pthread_mutex_lock(&philo->info->fork_locks[philo->other_fork]);
 			philo->info->forks[philo->own_fork] = philo->id;
 			philo->info->forks[philo->other_fork] = philo->id;
-			print_forks(philo);
 			pthread_mutex_unlock(&philo->info->fork_locks[philo->own_fork]);
 			pthread_mutex_unlock(&philo->info->fork_locks[philo->other_fork]);
 			eating(philo, philo->id - 1);
@@ -72,32 +68,7 @@ void *dinning_table(void *args)
 			sleeping(philo, philo->id - 1);
 		}
 		else	
-		{
-			// print_chairs(philo);
 			thinking(philo, philo->id - 1);
-		}
 	}
-	// pthread_mutex_unlock(&philo->info->fork_locks[philo->own_fork]);
-	// pthread_mutex_unlock(&philo->info->fork_locks[philo->other_fork]);
 	return (args);
-}
-
-void join_and_destroy(pthread_t *t, t_info *info, pthread_mutex_t *fork_locks, pthread_mutex_t *print_locks)
-{
-	int i;
-	
-	i = 0;
-	while (i < info->philo_count)
-	{
-		pthread_join(t[i], NULL);
-		i++;
-	}
-	i = 0;
-	while (i < info->philo_count)
-	{
-		pthread_mutex_destroy(&fork_locks[i]);
-		pthread_mutex_destroy(&print_locks[i]);
-		printf("%i, ", info->forks[i]);
-		i++;
-	}
 }

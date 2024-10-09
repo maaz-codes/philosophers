@@ -6,7 +6,7 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 18:49:01 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/09 09:45:47 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/09 16:13:04 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@
 # define ON			 	1
 # define OFF		 	0
 
-
 // error flags
 # define WRONG_FORMAT	1001
 # define WRONG_CHARS	1002
@@ -59,12 +58,11 @@ typedef struct s_info
 {
 	long long		start_program_time;
 	int				philo_count;
-	int				max_meals;
 	int				meals_done;
-	int 			*forks;
-	pthread_mutex_t	*fork_locks;
-	pthread_mutex_t	*print_locks;
+	int				forks[MAX_PHILOS];
 	int 			all_alive;
+	pthread_mutex_t fork_locks[MAX_PHILOS];
+	pthread_mutex_t print_locks[MAX_PHILOS];
 }					t_info;
 
 typedef struct s_philo
@@ -74,18 +72,22 @@ typedef struct s_philo
 	int				spotlight;
 	int				own_fork;
 	int				other_fork;
+	int				philo_count;
 	int				time_to_die;
 	int				time_to_eat;
 	int				time_to_sleep;
+	int				max_meals;
 	int				meal_count;
 	long long       last_meal_time;
 	long long		start_time;
+	pthread_t		t[MAX_PHILOS];
 }					t_philo;
 
 typedef struct s_doctor
 {
 	t_info 			*info;
 	t_philo			**philo;
+	pthread_mutex_t *lock;
 }					t_doctor;
 
 // libft
@@ -100,26 +102,31 @@ void				parsing(int argc, char *argv[]);
 
 // errors
 void				ft_error(int flag);
-// void 				free_array(int *array);
 
 // init
-void				init_info(char *argv[], t_info *info, pthread_mutex_t *fork_locks, pthread_mutex_t *print_locks);
-void 				init_philos(char **argv, t_philo **philo, t_info *info);
+void				init_info(char *argv[], t_info *info);
+void 				init_philos(char **argv, t_philo *philo, t_info *info);
+// void 				init_forks(t_info *info, int *forks);
+void 				init_doctor(t_doctor *doctor, t_info *info, t_philo *philo);
 
 // routines
 void 				eating(t_philo *philo, int index);
 void				sleeping(t_philo *philo, int index);
 void 				thinking(t_philo *philo, int index);
+void 				rotate_spotlight(t_philo *philo);
 
 // dinning_table
 int 				forks_available(t_philo *philo);
 void 				*dinning_table(void *args);
-void 				join_and_destroy(pthread_t *t, t_info *info, pthread_mutex_t *fork_locks, pthread_mutex_t *print_locks);
+void 				join_and_destroy(t_info *info, t_philo *philo);
 int 				all_alive(t_philo *philo);
 
 // time
 long long 			get_exact_time();
 void 				precise_usleep(long usec);
 void 				write_lock(t_philo *philo, char *str, int color);
+
+// checkup
+void 				*checkup(void *args);
 
 #endif
