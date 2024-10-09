@@ -6,19 +6,11 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 18:45:50 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/07 21:17:59 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/09 09:43:15 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-// void print_lock(long long ts, t_philo *philo, char *str)
-// {
-// 	pthread_mutex_lock(philo->info->print_locks);
-// 	printf("%lld %i %s", ts, philo->id, str);
-// 	pthread_mutex_unlock(philo->info->print_locks);
-// 	// timestamp_in_ms X has taken a fork
-// }
 
 static int *init_chairs(int chair_count)
 {
@@ -31,7 +23,7 @@ static int *init_chairs(int chair_count)
 	i = 0;
 	while (i < chair_count)
 	{
-		chairs[i] = -1;
+		chairs[i] = i + 1;
 		i++;
 	}
 	return (chairs);
@@ -60,9 +52,6 @@ void init_info(char *argv[], t_info *info, pthread_mutex_t *fork_locks, pthread_
 
 	info->start_program_time = get_exact_time();
 	info->philo_count = ft_atoi(argv[1]);
-	info->time_to_die = ft_atoi(argv[2]);
-	info->time_to_eat = ft_atoi(argv[3]);
-	info->time_to_sleep = ft_atoi(argv[4]);
 	if (argv[5])
 		info->max_meals = ft_atoi(argv[5]);
 	else
@@ -70,7 +59,6 @@ void init_info(char *argv[], t_info *info, pthread_mutex_t *fork_locks, pthread_
 	info->meals_done = FALSE;
 	info->all_alive = TRUE;
 	info->forks = init_forks(info->philo_count);
-	info->chairs = init_chairs(info->philo_count);
 	info->fork_locks = fork_locks;
 	info->print_locks = print_locks;
 	i = 0;
@@ -89,17 +77,23 @@ void init_info(char *argv[], t_info *info, pthread_mutex_t *fork_locks, pthread_
 	}
 }
 
-void init_philo(char **argv, t_philo *philo, t_info *info, int index)
+void init_philos(char **argv, t_philo **philo, t_info *info)
 {
-	philo->info = info;
-	philo->id = index + 1;
-	philo->own_chair = philo->id;
-	philo->own_fork = index; // philo->id
-	if (philo->id == philo->info->philo_count)
-		philo->other_fork = 0; // first_fork
-	else
-		philo->other_fork = index + 1;
-	philo->meal_count = 0;
-	philo->start_time = get_exact_time();
-	philo->starved = FALSE;
+	int i;
+
+	i = 0;
+	while (i < info->philo_count)
+	{
+		philo[i]->info = info;
+		philo[i]->id = i + 1;
+		philo[i]->spotlight = i + 1;
+		philo[i]->own_fork = i; // philo->id
+		philo[i]->other_fork = (i + 1) % info->philo_count;
+		philo[i]->time_to_die = ft_atoi(argv[2]);
+		philo[i]->time_to_eat = ft_atoi(argv[3]);
+		philo[i]->time_to_sleep = ft_atoi(argv[4]);
+		philo[i]->meal_count = 0;
+		philo[i]->start_time = get_exact_time();
+		i++;
+	}
 }

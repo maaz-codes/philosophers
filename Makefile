@@ -32,4 +32,7 @@ fclean: clean
 
 re: fclean all
 
+sanitize: CFLAGS += -fsanitize=thread,undefined -fno-omit-frame-pointer -g3 -O3
+sanitize: re
+
 .PHONY: all clean fclean re bonus

@@ -6,7 +6,7 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 18:45:32 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/07 20:48:29 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/09 09:45:06 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,31 +22,45 @@ void *checkup(void *args)
 {
 	t_doctor *doctor;
 	int i;
+	int count;
+	long long time;
 
 	doctor = (t_doctor *)args;
 	i = 0;
+	count = 0;
 	while (doctor->info->all_alive == TRUE)
 	{	
 		i = 0;
 		while (i < doctor->info->philo_count)
 		{
-			long long time = get_exact_time() - doctor->philo[i].start_time;
-			if (time > doctor->info->time_to_die)
+			time = get_exact_time() - doctor->philo[i].start_time;
+			if (time > doctor->philo[i].time_to_die)
 			{
+				// pthread_mutex_lock(&doctor->info->print_locks[doctor->philo->id - 1]);
+				printf("\033[1;36m %lld %i JUST DIED ON SPOTLIGHT: \n\033[0m", get_exact_time() - doctor->info->start_program_time, doctor->philo[i].id);
 				doctor->info->all_alive = FALSE;
-				printf("\033[1;36m %lld %i JUST DIED \n\033[0m", get_exact_time() - doctor->info->start_program_time, doctor->philo[i].id);
+				// pthread_mutex_unlock(&doctor->info->print_locks[doctor->philo->id - 1]);
+				
 				break ;
 			}	
 			else if (doctor->philo[i].meal_count == doctor->info->max_meals)
 			{
-				doctor->info->all_alive = FALSE;
-				printf("\033[1;36m %lld DINNER IS OVER \n\033[0m", get_exact_time());
-				break ;
+				count++;
+				if (count == doctor->info->philo_count) // all have eaten
+				{
+					// pthread_mutex_lock(&doctor->info->print_locks[doctor->philo->id - 1]);
+					doctor->info->all_alive = FALSE;
+					printf("\033[1;36m %lld DINNER IS OVER \n\033[0m", get_exact_time());
+					// pthread_mutex_unlock(&doctor->info->print_locks[doctor->philo->id - 1]);
+					
+					break ;		
+				}
 			}
 			i++;
 		}
+		precise_usleep(100); // Added to prevent busy waiting
 	}
-	return (args);
+	return (NULL);
 }
 
 int	main(int argc, char *argv[])
@@ -64,10 +78,10 @@ int	main(int argc, char *argv[])
 	{
 		parsing(argc, argv);
 		init_info(argv, &info, fork_locks, print_locks);
+		init_philo(argv, &philo, &info);
 		i = 0;
 		while (i < info.philo_count)
 		{
-			init_philo(argv, &philo[i], &info, i);
 			pthread_create(&t[i], NULL, &dinning_table, (void *)&philo[i]);
 			i++;
 		}

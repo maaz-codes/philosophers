@@ -32,3 +32,39 @@ void precise_usleep(long usec)
         
     } while (elapsed < usec);
 }
+
+void write_lock(t_philo *philo, char *str, int color)
+{
+    pthread_mutex_lock(&philo->info->print_locks[philo->id - 1]);
+    if (color == RED)
+        printf(T_RED "%lld %i %s %i \n" RESET,   get_exact_time() - philo->info->start_program_time,
+                                                    philo->id, 
+                                                    str,
+                                                    philo->spotlight);
+    else if (color == GREEN)
+        printf(T_GREEN "%lld %i %s %i \n" RESET,   get_exact_time() - philo->info->start_program_time,
+                                                    philo->id, 
+                                                    str,
+                                                    philo->spotlight);
+    else if (color == YELLOW)
+        printf(T_YELLOW "%lld %i %s %i \n" RESET,   get_exact_time() - philo->info->start_program_time,
+                                                    philo->id, 
+                                                    str,
+                                                    philo->spotlight);
+    else if (color == ORANGE)
+        printf(T_ORANGE "%lld %i %s %i \n" RESET,   get_exact_time() - philo->info->start_program_time,
+                                                    philo->id, 
+                                                    str,
+                                                    philo->spotlight);
+    else if (color == PURPLE)
+        printf(T_PURPLE "%lld %i %s %i \n" RESET,   get_exact_time() - philo->info->start_program_time,
+                                                    philo->id, 
+                                                    str,
+                                                    philo->spotlight);
+    else if (color == BLUE)
+        printf(T_BLUE "%lld %i %s %i \n" RESET,   get_exact_time() - philo->info->start_program_time,
+                                                    philo->id, 
+                                                    str,
+                                                    philo->spotlight);
+    pthread_mutex_unlock(&philo->info->print_locks[philo->id - 1]);
+}

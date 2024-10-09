@@ -6,7 +6,7 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 18:49:01 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/07 21:13:15 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/09 09:45:47 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,13 +21,22 @@
 # include <unistd.h>
 
 // COLORS
-# define RED "RED"
-# define GREEN "GREEN"
-# define YELLOW "YELLOW"
-# define ORANGE "ORANGE"
-# define PURPLE "PURPLE"
-# define BLUE "BLUE"
-# define WHITE "WHITE"
+# define RED 	2001
+# define GREEN 	2002
+# define YELLOW 2003
+# define ORANGE 2004
+# define PURPLE 2005
+# define BLUE 	2006
+# define WHITE 	2007
+
+# define T_RED	 		"\033[1;31m"
+# define T_GREEN 		"\033[1;32m"
+# define T_YELLOW 		"\033[1;33m"
+# define T_ORANGE 		"\033[1;34m"
+# define T_PURPLE 		"\033[1;35m"
+# define T_BLUE 		"\033[1;36m"
+# define T_WHITE 		"\033[1;37m"
+# define RESET 			"\033[0m"
 
 // general
 # define MAX_PHILOS 	200
@@ -35,6 +44,8 @@
 # define FALSE			0
 # define EXIT_FAILURE 	1
 # define EXIT_SUCCESS 	0
+# define ON			 	1
+# define OFF		 	0
 
 
 // error flags
@@ -48,12 +59,8 @@ typedef struct s_info
 {
 	long long		start_program_time;
 	int				philo_count;
-	int				time_to_die;
-	int				time_to_eat;
-	int				time_to_sleep;
 	int				max_meals;
 	int				meals_done;
-	int				*chairs;
 	int 			*forks;
 	pthread_mutex_t	*fork_locks;
 	pthread_mutex_t	*print_locks;
@@ -64,20 +71,21 @@ typedef struct s_philo
 {
 	t_info			*info;
 	int				id;
-	int				own_chair;
+	int				spotlight;
 	int				own_fork;
 	int				other_fork;
+	int				time_to_die;
+	int				time_to_eat;
+	int				time_to_sleep;
 	int				meal_count;
 	long long       last_meal_time;
 	long long		start_time;
-	int				starved;
-	pthread_t		thread;
 }					t_philo;
 
 typedef struct s_doctor
 {
 	t_info 			*info;
-	t_philo			*philo;
+	t_philo			**philo;
 }					t_doctor;
 
 // libft
@@ -96,7 +104,7 @@ void				ft_error(int flag);
 
 // init
 void				init_info(char *argv[], t_info *info, pthread_mutex_t *fork_locks, pthread_mutex_t *print_locks);
-void 				init_philo(char **argv, t_philo *philo, t_info *info, int index);
+void 				init_philos(char **argv, t_philo **philo, t_info *info);
 
 // routines
 void 				eating(t_philo *philo, int index);
@@ -107,8 +115,11 @@ void 				thinking(t_philo *philo, int index);
 int 				forks_available(t_philo *philo);
 void 				*dinning_table(void *args);
 void 				join_and_destroy(pthread_t *t, t_info *info, pthread_mutex_t *fork_locks, pthread_mutex_t *print_locks);
+int 				all_alive(t_philo *philo);
 
 // time
 long long 			get_exact_time();
 void 				precise_usleep(long usec);
+void 				write_lock(t_philo *philo, char *str, int color);
+
 #endif
