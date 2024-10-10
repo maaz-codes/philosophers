@@ -33,9 +33,9 @@ void precise_usleep(long usec)
     } while (elapsed < usec);
 }
 
-void write_lock(t_philo *philo, char *str, int color)
+void write_lock(t_info *info, t_philo *philo, char *str, int color)
 {
-    pthread_mutex_lock(&philo->info->print_locks[philo->id - 1]);
+    pthread_mutex_lock(&info->print_lock);
     if (color == RED)
         printf(T_RED "%lld %i %s %i \n" RESET,   get_exact_time() - philo->info->start_program_time,
                                                     philo->id, 
@@ -66,5 +66,5 @@ void write_lock(t_philo *philo, char *str, int color)
                                                     philo->id, 
                                                     str,
                                                     philo->spotlight);
-    pthread_mutex_unlock(&philo->info->print_locks[philo->id - 1]);
+    pthread_mutex_unlock(&info->print_lock);
 }

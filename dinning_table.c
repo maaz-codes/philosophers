@@ -30,18 +30,15 @@ int spotlight(t_philo *philo)
 	return (philo->spotlight % 2 == 0);
 }
 
-int all_alive(t_philo *philo)
+int all_alive(t_info *info)
 {
-	pthread_mutex_t lock;
 	int flag;
 
 	flag = FALSE;
-	pthread_mutex_init(&lock, NULL);
-	pthread_mutex_lock(&lock);
-	if (philo->info->all_alive == TRUE)
+	pthread_mutex_lock(&info->alive_lock);
+	if (info->all_alive == TRUE)
 		flag = TRUE;
-	pthread_mutex_unlock(&lock);
-	pthread_mutex_destroy(&lock);
+	pthread_mutex_unlock(&info->alive_lock);
 	return (flag);
 }
 
@@ -50,13 +47,13 @@ void *dinning_table(void *args)
 	t_philo *philo;
 
 	philo = (t_philo *)args;
-	while (all_alive(philo) == TRUE)
+	while (all_alive(philo->info) == TRUE)
 	{	
 		if (spotlight(philo) == ON)             
 		{
 			while (forks_available(philo) == FALSE)
 				precise_usleep(1);
-			write_lock(philo, "HAS TAKEN FORKS ON SPOTLIGHT:", ORANGE);
+			// write_lock(philo, "HAS TAKEN FORKS ON SPOTLIGHT:", ORANGE);
 			pthread_mutex_lock(&philo->info->fork_locks[philo->own_fork]);
 			pthread_mutex_lock(&philo->info->fork_locks[philo->other_fork]);
 			philo->info->forks[philo->own_fork] = philo->id;
@@ -64,7 +61,6 @@ void *dinning_table(void *args)
 			pthread_mutex_unlock(&philo->info->fork_locks[philo->own_fork]);
 			pthread_mutex_unlock(&philo->info->fork_locks[philo->other_fork]);
 			eating(philo, philo->id - 1);
-			philo->start_time = get_exact_time(); // reset_time
 			sleeping(philo, philo->id - 1);
 		}
 		else	

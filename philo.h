@@ -6,7 +6,7 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 18:49:01 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/09 16:13:04 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/10 15:28:11 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,11 +58,14 @@ typedef struct s_info
 {
 	long long		start_program_time;
 	int				philo_count;
+	int 			all_alive;
+	int				eating;
 	int				meals_done;
 	int				forks[MAX_PHILOS];
-	int 			all_alive;
-	pthread_mutex_t fork_locks[MAX_PHILOS];
-	pthread_mutex_t print_locks[MAX_PHILOS];
+	pthread_mutex_t fork_locks[MAX_PHILOS]; 
+	pthread_mutex_t print_lock;
+	pthread_mutex_t eat_lock;
+	pthread_mutex_t alive_lock;
 }					t_info;
 
 typedef struct s_philo
@@ -78,16 +81,17 @@ typedef struct s_philo
 	int				time_to_sleep;
 	int				max_meals;
 	int				meal_count;
-	long long       last_meal_time;
+	int				statiated;
 	long long		start_time;
+	pthread_mutex_t	reset_lock[MAX_PHILOS];
 	pthread_t		t[MAX_PHILOS];
 }					t_philo;
 
 typedef struct s_doctor
 {
 	t_info 			*info;
-	t_philo			**philo;
-	pthread_mutex_t *lock;
+	t_philo			*philo;
+	int				philo_count;
 }					t_doctor;
 
 // libft
@@ -106,7 +110,6 @@ void				ft_error(int flag);
 // init
 void				init_info(char *argv[], t_info *info);
 void 				init_philos(char **argv, t_philo *philo, t_info *info);
-// void 				init_forks(t_info *info, int *forks);
 void 				init_doctor(t_doctor *doctor, t_info *info, t_philo *philo);
 
 // routines
@@ -119,12 +122,12 @@ void 				rotate_spotlight(t_philo *philo);
 int 				forks_available(t_philo *philo);
 void 				*dinning_table(void *args);
 void 				join_and_destroy(t_info *info, t_philo *philo);
-int 				all_alive(t_philo *philo);
+int 				all_alive(t_info *info);
 
 // time
 long long 			get_exact_time();
 void 				precise_usleep(long usec);
-void 				write_lock(t_philo *philo, char *str, int color);
+void 				write_lock(t_info *info, t_philo *philo, char *str, int color);
 
 // checkup
 void 				*checkup(void *args);

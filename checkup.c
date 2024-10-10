@@ -6,38 +6,30 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 10:13:41 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/09 16:15:32 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/10 16:27:45 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-static int check_alive(t_doctor *doctor)
-{
-	int flag;
-
-	flag = FALSE;
-	pthread_mutex_lock(doctor->lock);
-	if (doctor->info->all_alive == TRUE)
-		flag = TRUE;
-	pthread_mutex_unlock(doctor->lock);
-	return (flag);
-}
 
 static int is_dead(t_doctor *doctor, int i)
 {
     long long time;
     int flag;
     
-    time = get_exact_time() - doctor->philo[i]->start_time;
-    flag = 0;
-    if (time > doctor->philo[i]->time_to_die)
+    // race_condition ?
+    pthread_mutex_lock(&doctor->philo[i].reset_lock[i]);
+    time = get_exact_time() - doctor->philo->start_time;
+    pthread_mutex_unlock(&doctor->philo[i].reset_lock[i]);
+    flag = FALSE;
+    // race_condition ?
+    if (time > doctor->philo[i].time_to_die)
     {
-        write_lock(doctor->philo[i], "HAS DIED", RED);
-        pthread_mutex_lock(doctor->lock);
+        write_lock(doctor->info, &doctor->philo[i], "HAS DIED", RED);
+        pthread_mutex_lock(&doctor->info->alive_lock);
         doctor->info->all_alive = FALSE;
-        flag = 1;
-        pthread_mutex_unlock(doctor->lock);
+        flag = TRUE;
+        pthread_mutex_unlock(&doctor->info->alive_lock);
     }
     return (flag);
 }
@@ -47,17 +39,22 @@ static int all_ate(t_doctor *doctor, int i, int *count)
     int flag;
 
     flag = 0;
-    if (doctor->philo[i]->meal_count >= doctor->philo[i]->max_meals)
+    // race_condition ?
+    if (doctor->philo[i].statiated == TRUE)
     {
         (*count) += 1;
-        pthread_mutex_lock(doctor->lock);
-        if ((*count) == doctor->info->philo_count) // all have eaten
-        {
-            doctor->info->all_alive = FALSE;
-            printf("\033[1;36m %lld DINNER IS OVER \n\033[0m", get_exact_time());	
-        }
-        pthread_mutex_unlock(doctor->lock);
+        doctor->philo[i].statiated = FALSE;
     }
+    pthread_mutex_lock(&doctor->info->alive_lock);
+    if ((*count) >= doctor->info->philo_count) // all ate
+    {
+        flag = 1;
+        doctor->info->all_alive = FALSE;
+        pthread_mutex_lock(&doctor->info->print_lock);
+        printf("\033[1;36m%lld DINNER IS OVER \n\033[0m", get_exact_time() - doctor->info->start_program_time);	
+        pthread_mutex_unlock(&doctor->info->print_lock);
+    }
+    pthread_mutex_unlock(&doctor->info->alive_lock);
     return (flag);
 }
 
@@ -70,9 +67,10 @@ void *checkup(void *args)
     i = 0;
     count = 0;
 	doctor = (t_doctor *)args;
-	while (check_alive(doctor) == TRUE)
-	{	
-		while (i < doctor->info->philo_count)
+    while (all_alive(doctor->info) == TRUE)
+	{
+        i = 0;
+		while (i < doctor->philo_count)
         {
             if (is_dead(doctor, i) == TRUE || all_ate(doctor, i, &count) == TRUE)
                 break ;

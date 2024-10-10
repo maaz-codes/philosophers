@@ -6,24 +6,11 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 18:45:50 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/09 16:14:47 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/10 15:28:43 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-// void init_forks(t_info *info, int *forks)
-// {	
-// 	int i;
-
-// 	info->forks = forks;
-// 	i = 0;
-// 	while (i < info->philo_count)
-// 	{
-// 		info->forks[i] = 0;
-// 		i++;
-// 	}
-// }
 
 void init_info(char *argv[], t_info *info)
 {
@@ -31,15 +18,20 @@ void init_info(char *argv[], t_info *info)
 
 	info->start_program_time = get_exact_time();
 	info->philo_count = ft_atoi(argv[1]);
-	info->meals_done = FALSE;
 	info->all_alive = TRUE;
+	info->eating = FALSE;
+	info->meals_done = FALSE;
+	if (pthread_mutex_init(&info->print_lock, NULL) != 0)
+			ft_error(MUTEX_P);
+	if (pthread_mutex_init(&info->eat_lock, NULL) != 0)
+			ft_error(MUTEX_P);
+	if (pthread_mutex_init(&info->alive_lock, NULL) != 0)
+			ft_error(MUTEX_P);
 	i = 0;
 	while (i < info->philo_count)
 	{
 		if (pthread_mutex_init(&info->fork_locks[i], NULL) != 0)
             ft_error(MUTEX_F);
-		if (pthread_mutex_init(&info->print_locks[i], NULL) != 0)
-			ft_error(MUTEX_P);
 		info->forks[i] = 0;
 		i++;
 	}
@@ -66,17 +58,17 @@ void init_philos(char **argv, t_philo *philo, t_info *info)
 		else
 			philo[i].max_meals = -1;
 		philo[i].meal_count = 0;
+		philo[i].statiated = FALSE;
 		philo[i].start_time = get_exact_time();
+		if (pthread_mutex_init(&philo->reset_lock[i], NULL) != 0)
+			ft_error(MUTEX_P);
 		i++;
 	}
 }
 
 void init_doctor(t_doctor *doctor, t_info *info, t_philo *philo)
 {
-	pthread_mutex_t d;
-
-	pthread_mutex_init(&d, NULL);
 	doctor->info = info;
-	doctor->philo = &philo;
-	doctor->lock = &d;
+	doctor->philo = philo;
+	doctor->philo_count = info->philo_count;
 }
