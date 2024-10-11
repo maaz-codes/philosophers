@@ -6,7 +6,7 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 18:49:01 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/11 12:13:21 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/11 14:45:59 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,7 @@
 # define WRONG_FORMAT	1001
 # define WRONG_CHARS	1002
 # define WRONG_ARGS		1003
-# define MUTEX_F		1004
-# define MUTEX_P		1005
+# define MUTEX_FAIL		1004
 
 typedef struct s_info
 {
@@ -94,6 +93,7 @@ typedef struct s_doctor
 	t_info 			*info;
 	t_philo			*philo;
 	int				philo_count;
+	int				time_to_die;
 }					t_doctor;
 
 // libft
@@ -106,13 +106,14 @@ int					ft_strncmp(const char *s1, const char *s2, size_t n);
 // parsing
 void				parsing(int argc, char *argv[]);
 
-// errors
-void				ft_error(int flag);
-
 // init
 void				init_info(char *argv[], t_info *info);
 void 				init_philos(char **argv, t_philo *philo, t_info *info);
 void 				init_doctor(t_doctor *doctor, t_info *info, t_philo *philo);
+void 				init_mutexes(t_info *info, t_philo *philo);
+
+// errors
+void				ft_error(int flag);
 
 // routines
 void 				eating(t_philo *philo, int index);
@@ -122,7 +123,7 @@ void 				thinking(t_philo *philo, int index);
 // dinning_table
 int 				forks_available(t_philo *philo);
 void 				*dinning_table(void *args);
-void 				join_and_destroy(t_info *info, t_philo *philo);
+// void 				join_and_destroy(t_info *info, t_philo *philo);
 int 				all_alive(t_info *info);
 
 // time
@@ -132,10 +133,12 @@ void 				write_lock(t_info *info, t_philo *philo, char *str, int color);
 
 // checkup
 void 				*checkup(void *args);
+int 				is_dead(t_doctor *doctor, int i);
+int 				all_ate(t_doctor *doctor, int i, int *count);
 
 // utils
 int 				all_eating(t_philo *philo);
 void 				rotate_spotlight(t_philo *philo);
-void 				mutex_lock(t_info *lock, void *var, void *value);
+void 				mutex_lock(pthread_mutex_t *lock, int *var, int *value);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 10:06:04 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/09 08:40:45 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/11 14:40:30 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,9 +46,9 @@ void	ft_error(int flag)
 		printf("\033[1;31m Enter only numbers \033[0m");
 	else if (flag == WRONG_ARGS)
 		printf("\033[1;31m READ THE EVALUATION SHEET CORRECTLY :) \033[0m");
-	else if (flag == MUTEX_F)
+	else if (flag == MUTEX_FAIL)
 		printf("\033[1;31m MUTEX FOR FORK FAILED!\033[0m");
-	else if (flag == MUTEX_P)
+	else if (flag == MUTEX_FAIL)
 		printf("\033[1;31m MUTEX FOR PRINT FAILED!\033[0m");
 	exit(EXIT_FAILURE);
 }

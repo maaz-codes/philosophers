@@ -3,7 +3,6 @@
 void eating(t_philo *philo, int i)
 {	
 	if (all_alive(philo->info) == TRUE)
-	if (philo->info->all_alive == TRUE)
 	{
 		write_lock(philo->info, philo, "IS EATING... ON SPOTLIGHT:", YELLOW);
 		pthread_mutex_lock(&philo->info->eat_lock);

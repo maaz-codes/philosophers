@@ -13,14 +13,16 @@ SRC 		= 	philo.c \
 
 OBJ = $(SRC:.c=.o)
 
-CC = cc #-fsanitize=thread,undefined -O3
-# CFLAGS = -Wall -Wextra -Werror
+CC = cc
+CFLAGS = -g3 -O3 # -Wall -Wextra
+LDFLAGS = -lpthread
+
 REM		=	rm -rf
 
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	@cc $(CFLAGS) $^ -o $@
+	@$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
 	@echo "\033[1;36m Table's Prepared🍽 \033[0m"
 
 %.o: %.c
@@ -34,7 +36,10 @@ fclean: clean
 
 re: fclean all
 
-sanitize: CFLAGS += -fsanitize=thread,undefined -fno-omit-frame-pointer -g3 -O3
-sanitize: re
+tsan: CFLAGS += -fsanitize=thread,undefined,float-divide-by-zero,unsigned-integer-overflow,implicit-conversion,local-bounds -g3 -O3 -fno-omit-frame-pointer
+tsan: re
+
+asan: CFLAGS += -fsanitize=address,undefined,float-divide-by-zero,unsigned-integer-overflow,implicit-conversion,local-bounds -g3 -O3 -fno-omit-frame-pointer
+asan: re
 
 .PHONY: all clean fclean re bonus

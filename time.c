@@ -27,7 +27,7 @@ void precise_usleep(long usec)
         elapsed = get_elapsed_time_microseconds(start, current);
         rem = usec - elapsed;
 
-        if (rem > 1000) 
+        if (rem > 1000)
             usleep(rem / 2);
         
     } while (elapsed < usec);
@@ -37,7 +37,10 @@ void write_lock(t_info *info, t_philo *philo, char *str, int color)
 {
     pthread_mutex_lock(&info->print_lock);
     if (all_alive(info) == FALSE)
+    {
+        pthread_mutex_unlock(&info->print_lock);
         return ;
+    }
     pthread_mutex_lock(&philo->spotlight_lock);
     if (color == RED)
         printf(T_RED "%lld %i %s %i \n" RESET,   get_exact_time() - philo->info->start_program_time,
