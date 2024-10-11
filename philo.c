@@ -6,7 +6,7 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 18:45:32 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/10 15:07:23 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/11 12:12:39 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,9 @@ void join_and_destroy(t_info *info, t_philo *philo)
 	while (i < info->philo_count)
 	{
 		pthread_mutex_destroy(&info->fork_locks[i]);
+		pthread_mutex_destroy(&info->reset_lock[i]);
+		pthread_mutex_destroy(&philo[i].spotlight_lock);
+		pthread_mutex_destroy(&philo[i].meal_lock);
 		printf("%i, ", info->forks[i]);
 		i++;
 	}

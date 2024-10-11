@@ -6,7 +6,7 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 10:13:41 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/10 16:27:45 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/11 11:45:25 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,9 @@ static int is_dead(t_doctor *doctor, int i)
     int flag;
     
     // race_condition ?
-    pthread_mutex_lock(&doctor->philo[i].reset_lock[i]);
-    time = get_exact_time() - doctor->philo->start_time;
-    pthread_mutex_unlock(&doctor->philo[i].reset_lock[i]);
+    pthread_mutex_lock(&doctor->info->reset_lock[i]);
+    time = get_exact_time() - doctor->philo[i].start_time;
+    pthread_mutex_unlock(&doctor->info->reset_lock[i]);
     flag = FALSE;
     // race_condition ?
     if (time > doctor->philo[i].time_to_die)
@@ -40,11 +40,13 @@ static int all_ate(t_doctor *doctor, int i, int *count)
 
     flag = 0;
     // race_condition ?
+    pthread_mutex_lock(&doctor->philo[i].meal_lock);
     if (doctor->philo[i].statiated == TRUE)
     {
         (*count) += 1;
         doctor->philo[i].statiated = FALSE;
     }
+    pthread_mutex_unlock(&doctor->philo[i].meal_lock);
     pthread_mutex_lock(&doctor->info->alive_lock);
     if ((*count) >= doctor->info->philo_count) // all ate
     {

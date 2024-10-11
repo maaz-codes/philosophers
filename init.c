@@ -6,7 +6,7 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 18:45:50 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/10 15:28:43 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/11 11:47:00 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,8 @@ void init_info(char *argv[], t_info *info)
 	{
 		if (pthread_mutex_init(&info->fork_locks[i], NULL) != 0)
             ft_error(MUTEX_F);
+		if (pthread_mutex_init(&info->reset_lock[i], NULL) != 0)
+			ft_error(MUTEX_P);
 		info->forks[i] = 0;
 		i++;
 	}
@@ -60,7 +62,9 @@ void init_philos(char **argv, t_philo *philo, t_info *info)
 		philo[i].meal_count = 0;
 		philo[i].statiated = FALSE;
 		philo[i].start_time = get_exact_time();
-		if (pthread_mutex_init(&philo->reset_lock[i], NULL) != 0)
+		if (pthread_mutex_init(&philo[i].spotlight_lock, NULL) != 0)
+			ft_error(MUTEX_P);
+		if (pthread_mutex_init(&philo[i].meal_lock, NULL) != 0)
 			ft_error(MUTEX_P);
 		i++;
 	}

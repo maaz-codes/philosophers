@@ -6,7 +6,7 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 18:49:01 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/10 15:28:11 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/11 12:13:21 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ typedef struct s_info
 	pthread_mutex_t print_lock;
 	pthread_mutex_t eat_lock;
 	pthread_mutex_t alive_lock;
+	pthread_mutex_t	reset_lock[MAX_PHILOS];
 }					t_info;
 
 typedef struct s_philo
@@ -83,8 +84,9 @@ typedef struct s_philo
 	int				meal_count;
 	int				statiated;
 	long long		start_time;
-	pthread_mutex_t	reset_lock[MAX_PHILOS];
 	pthread_t		t[MAX_PHILOS];
+	pthread_mutex_t spotlight_lock;
+	pthread_mutex_t meal_lock;
 }					t_philo;
 
 typedef struct s_doctor
@@ -116,7 +118,6 @@ void 				init_doctor(t_doctor *doctor, t_info *info, t_philo *philo);
 void 				eating(t_philo *philo, int index);
 void				sleeping(t_philo *philo, int index);
 void 				thinking(t_philo *philo, int index);
-void 				rotate_spotlight(t_philo *philo);
 
 // dinning_table
 int 				forks_available(t_philo *philo);
@@ -131,5 +132,10 @@ void 				write_lock(t_info *info, t_philo *philo, char *str, int color);
 
 // checkup
 void 				*checkup(void *args);
+
+// utils
+int 				all_eating(t_philo *philo);
+void 				rotate_spotlight(t_philo *philo);
+void 				mutex_lock(t_info *lock, void *var, void *value);
 
 #endif
