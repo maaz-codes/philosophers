@@ -6,7 +6,7 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 10:13:41 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/11 17:07:37 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/12 15:58:48 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,11 @@ int is_dead(t_doctor *doctor, int i)
     if (time > doctor->time_to_die)
     {
         write_lock(doctor->info, &doctor->philo[i], "HAS DIED", RED);
+        // mutex_lock(&doctor->info->alive_lock, &doctor->info->all_alive, FALSE);
         pthread_mutex_lock(&doctor->info->alive_lock);
         doctor->info->all_alive = FALSE;
-        flag = TRUE;
         pthread_mutex_unlock(&doctor->info->alive_lock);
+        flag = TRUE;
     }
     return (flag);
 }
@@ -44,21 +45,21 @@ int all_ate(t_doctor *doctor, int i, int *count)
         doctor->philo[i].statiated = FALSE;
     }
     pthread_mutex_unlock(&doctor->philo[i].meal_lock);
-    // pthread_mutex_lock(&doctor->info->alive_lock);
     if (all_alive(doctor->info))
     {
         if ((*count) >= doctor->info->philo_count) // all ate
         {
             flag = 1;
-            pthread_mutex_lock(&doctor->info->alive_lock);
-            doctor->info->all_alive = FALSE;
-            pthread_mutex_unlock(&doctor->info->alive_lock);
-            pthread_mutex_lock(&doctor->info->print_lock);
-            printf("\033[1;36m%lld DINNER IS OVER \n\033[0m", get_exact_time() - doctor->info->start_program_time);	
-            pthread_mutex_unlock(&doctor->info->print_lock);
+            mutex_lock(&doctor->info->alive_lock, &doctor->info->all_alive, FALSE);
+            // pthread_mutex_lock(&doctor->info->alive_lock);
+            // doctor->info->all_alive = FALSE;
+            // pthread_mutex_unlock(&doctor->info->alive_lock);
+            write_lock(doctor->info, doctor->philo, "DINNER IS OVER", BLUE);
+            // pthread_mutex_lock(&doctor->info->print_lock);
+            // printf("\033[1;36m%lld DINNER IS OVER \n\033[0m", get_exact_time() - doctor->info->start_program_time);	
+            // pthread_mutex_unlock(&doctor->info->print_lock);
         }
     }
-    // pthread_mutex_unlock(&doctor->info->alive_lock);
     return (flag);
 }
 
@@ -80,7 +81,7 @@ void *checkup(void *args)
                 break ;
             i++;
         }
-		precise_usleep(100); // Added to prevent busy waiting
+		precise_usleep(doctor->info, 100); // Added to prevent busy waiting
 	}
 	return (NULL);
 }

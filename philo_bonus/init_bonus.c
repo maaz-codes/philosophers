@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init.c                                             :+:      :+:    :+:   */
+/*   init_bonus.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 18:45:50 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/11 14:37:02 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/13 17:28:21 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "philo_bonus.h"
 
 void init_info(char *argv[], t_info *info)
 {
@@ -18,6 +18,7 @@ void init_info(char *argv[], t_info *info)
 
 	info->start_program_time = get_exact_time();
 	info->philo_count = ft_atoi(argv[1]);
+	// ft_atol_modified(argv[1], info->philo_count);
 	info->all_alive = TRUE;
 	info->eating = FALSE;
 	info->meals_done = FALSE;

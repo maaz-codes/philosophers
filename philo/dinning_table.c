@@ -6,23 +6,11 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 14:25:48 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/11 17:24:20 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/12 15:54:35 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-// void	print_forks(t_philo *philo)
-// {
-// 	int	i;
-
-// 	i = 0;
-// 	while (i < philo->info->philo_count)
-// 	{
-// 		printf("%i, ", philo->info->forks[i]);
-// 		i++;
-// 	}
-// }
 
 int	forks_available(t_philo *philo)
 {
@@ -31,27 +19,24 @@ int	forks_available(t_philo *philo)
 
 	own_fork = 0;
 	other_fork = 0;
-	mutex_lock(&philo->info->fork_locks[philo->own_fork], &own_fork,
-		&philo->info->forks[philo->own_fork]);
-	mutex_lock(&philo->info->fork_locks[philo->other_fork], &other_fork,
-		&philo->info->forks[philo->other_fork]);
+	pthread_mutex_lock(&philo->info->fork_locks[philo->own_fork]);
+	own_fork = philo->info->forks[philo->own_fork];
+	pthread_mutex_unlock(&philo->info->fork_locks[philo->own_fork]);
+	pthread_mutex_lock(&philo->info->fork_locks[philo->other_fork]);
+	other_fork = philo->info->forks[philo->other_fork];
+	pthread_mutex_unlock(&philo->info->fork_locks[philo->other_fork]);
 	return (own_fork == 0 && other_fork == 0);
 }
 
 int	spotlight(t_philo *philo)
 {
-	return (philo->spotlight % 2 == 0);
-}
-
-int	all_alive(t_info *info)
-{
-	int	flag;
+	int flag;
 
 	flag = FALSE;
-	pthread_mutex_lock(&info->alive_lock);
-	if (info->all_alive == TRUE)
+	pthread_mutex_lock(&philo->spotlight_lock);
+	if(philo->spotlight % 2 == 0)
 		flag = TRUE;
-	pthread_mutex_unlock(&info->alive_lock);
+	pthread_mutex_unlock(&philo->spotlight_lock);
 	return (flag);
 }
 
@@ -65,15 +50,15 @@ void	*dinning_table(void *args)
 		if (spotlight(philo) == ON)
 		{
 			while (forks_available(philo) == FALSE)
-				precise_usleep(1);
-			write_lock(philo->info, philo, "HAS TAKEN A FORK ON SPOTLIGHT:",
-				ORANGE);
-			write_lock(philo->info, philo, "HAS TAKEN A FORK ON SPOTLIGHT:",
-				ORANGE);
+				precise_usleep(philo->info, 1);
 			mutex_lock(&philo->info->fork_locks[philo->own_fork],
-				&philo->info->forks[philo->own_fork], &philo->id);
+				&philo->info->forks[philo->own_fork], philo->id);
+			write_lock(philo->info, philo, "HAS TAKEN A FORK ON SPOTLIGHT:",
+				ORANGE);
 			mutex_lock(&philo->info->fork_locks[philo->other_fork],
-				&philo->info->forks[philo->other_fork], &philo->id);
+				&philo->info->forks[philo->other_fork], philo->id);
+			write_lock(philo->info, philo, "HAS TAKEN A FORK ON SPOTLIGHT:",
+				ORANGE);
 			eating(philo, philo->id - 1);
 			sleeping(philo, philo->id - 1);
 		}

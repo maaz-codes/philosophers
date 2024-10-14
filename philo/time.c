@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   time.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/11 18:06:45 by maakhan           #+#    #+#             */
+/*   Updated: 2024/10/14 21:57:12 by maakhan          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
 long long get_exact_time()
@@ -15,7 +27,7 @@ static long get_elapsed_time_microseconds(struct timeval start, struct timeval e
     return (end.tv_sec - start.tv_sec) * 1000000L + (end.tv_usec - start.tv_usec);
 }
 
-void precise_usleep(long usec) 
+void precise_usleep(t_info *info, long usec) 
 {
     struct timeval start, current;
     long elapsed;
@@ -26,7 +38,7 @@ void precise_usleep(long usec)
         gettimeofday(&current, NULL);
         elapsed = get_elapsed_time_microseconds(start, current);
         rem = usec - elapsed;
-
+// && all_alive(info) == TRUE
         if (rem > 1000)
             usleep(rem / 2);
         

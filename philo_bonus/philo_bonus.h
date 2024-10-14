@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo.h                                            :+:      :+:    :+:   */
+/*   philo_bonus.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 18:49:01 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/11 14:45:59 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/14 22:08:23 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PHILO_H
-# define PHILO_H
+#ifndef PHILO_BONUS_H
+# define PHILO_BONUS_H
 
 # include <limits.h>
 # include <pthread.h>
@@ -19,6 +19,13 @@
 # include <stdlib.h>
 # include <sys/time.h>
 # include <unistd.h>
+#include <semaphore.h>
+#include <fcntl.h>
+#include <sys/wait.h>
+
+# define SEMA_PHILO "/philosophers"
+# define SEMA_LIGHT "/sema_light"
+# define SEMA_WRITE "/sema_write"
 
 // COLORS
 # define RED 	2001
@@ -96,8 +103,16 @@ typedef struct s_doctor
 	int				time_to_die;
 }					t_doctor;
 
+typedef struct s_sema
+{
+	sem_t			*sema_philo;
+	sem_t 			*sema_light;
+	sem_t			*sema_write;
+}					t_sema;
+
 // libft
 int					ft_atoi(const char *str);
+char				*ft_atol_modified(char *str, long long *n);
 char				**ft_split(const char *s, char c);
 char				*ft_strjoin(char const *s1, char const *s2);
 size_t				ft_strlen(const char *str);
@@ -116,29 +131,30 @@ void 				init_mutexes(t_info *info, t_philo *philo);
 void				ft_error(int flag);
 
 // routines
-void 				eating(t_philo *philo, int index);
-void				sleeping(t_philo *philo, int index);
-void 				thinking(t_philo *philo, int index);
+// void 				eating(t_philo *philo, int index);
+// void				sleeping(t_philo *philo, int index);
+// void 				thinking(t_philo *philo, int index);
 
 // dinning_table
-int 				forks_available(t_philo *philo);
 void 				*dinning_table(void *args);
-// void 				join_and_destroy(t_info *info, t_philo *philo);
-int 				all_alive(t_info *info);
+int 				forks_available(t_philo *philo);
+int					spotlight(t_philo *philo, t_sema *sema);
 
 // time
 long long 			get_exact_time();
-void 				precise_usleep(long usec);
+void 				precise_usleep(t_info *info, long usec);
 void 				write_lock(t_info *info, t_philo *philo, char *str, int color);
+void 				write_sema(t_info *info, t_philo *philo, char *str, t_sema *sema);
 
 // checkup
-void 				*checkup(void *args);
-int 				is_dead(t_doctor *doctor, int i);
-int 				all_ate(t_doctor *doctor, int i, int *count);
+// void 				*checkup(void *args);
+// int 				is_dead(t_doctor *doctor, int i);
+// int 				all_ate(t_doctor *doctor, int i, int *count);
 
 // utils
 int 				all_eating(t_philo *philo);
 void 				rotate_spotlight(t_philo *philo);
-void 				mutex_lock(pthread_mutex_t *lock, int *var, int *value);
+void 				mutex_lock(pthread_mutex_t *lock, int *var, int value);
+int 				all_alive(t_info *info);
 
 #endif
