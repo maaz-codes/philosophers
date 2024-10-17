@@ -6,7 +6,7 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 18:06:45 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/14 10:29:10 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/16 14:09:53 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,15 +45,15 @@ void precise_usleep(t_info *info, long usec)
     } while (elapsed < usec);
 }
 
-void write_sema(t_info *info, t_philo *philo, char *str, t_sema *sema)
-{
-    sem_wait(sema->sema_write);
-    printf(T_BLUE "%lld %i %s %i \n" RESET,   get_exact_time() - philo->info->start_program_time,
-                                                        philo->id, 
-                                                        str,
-                                                        philo->spotlight);
-    sem_post(sema->sema_write);
-}
+// void write_sema(t_info *info, t_philo *philo, char *str, t_sema *sema)
+// {
+//     sem_wait(sema->sema_write);
+//     printf(T_BLUE "%lld %i %s %i \n" RESET,   get_exact_time() - philo->info->start_program_time,
+//                                                         philo->id, 
+//                                                         str,
+//                                                         philo->spotlight);
+//     sem_post(sema->sema_write);
+// }
 
 // void write_lock(t_info *info, t_philo *philo, char *str, int color)
 // {

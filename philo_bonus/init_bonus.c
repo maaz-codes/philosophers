@@ -6,7 +6,7 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 18:45:50 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/13 17:28:21 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/17 19:28:51 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,14 @@ void init_info(char *argv[], t_info *info)
 
 	info->start_program_time = get_exact_time();
 	info->philo_count = ft_atoi(argv[1]);
-	// ft_atol_modified(argv[1], info->philo_count);
 	info->all_alive = TRUE;
 	info->eating = FALSE;
 	info->meals_done = FALSE;
+	info->sema_write = sem_open(SEMA_WRITE, O_CREAT, 0644, 1);
+	info->sema_light = sem_open(SEMA_LIGHT, O_CREAT, 0644, 1);
+	info->sema_eat = sem_open(SEMA_EAT, O_CREAT, 0644, info->philo_count / 2);
+	info->sema_think = sem_open(SEMA_THINK, O_CREAT, 0644, 0);
+	info->sema_death = sem_open(SEMA_DEATH, O_CREAT, 0644, 0);
 	i = 0;
 	while (i < info->philo_count)
 	{
@@ -55,37 +59,4 @@ void init_philos(char **argv, t_philo *philo, t_info *info)
 		philo[i].start_time = get_exact_time();
 		i++;
 	}
-}
-
-void init_mutexes(t_info *info, t_philo *philo)
-{
-	int i;
-
-	if (pthread_mutex_init(&info->print_lock, NULL) != 0)
-			ft_error(MUTEX_FAIL);
-	if (pthread_mutex_init(&info->eat_lock, NULL) != 0)
-			ft_error(MUTEX_FAIL);
-	if (pthread_mutex_init(&info->alive_lock, NULL) != 0)
-			ft_error(MUTEX_FAIL);
-	i = 0;
-	while (i < info->philo_count)
-	{
-		if (pthread_mutex_init(&info->fork_locks[i], NULL) != 0)
-            ft_error(MUTEX_FAIL);
-		if (pthread_mutex_init(&info->reset_lock[i], NULL) != 0)
-			ft_error(MUTEX_FAIL);
-		if (pthread_mutex_init(&philo[i].spotlight_lock, NULL) != 0)
-			ft_error(MUTEX_FAIL);
-		if (pthread_mutex_init(&philo[i].meal_lock, NULL) != 0)
-			ft_error(MUTEX_FAIL);
-		i++;
-	}
-}
-
-void init_doctor(t_doctor *doctor, t_info *info, t_philo *philo)
-{
-	doctor->info = info;
-	doctor->philo = philo;
-	doctor->philo_count = info->philo_count;
-	doctor->time_to_die = philo[0].time_to_die;
 }

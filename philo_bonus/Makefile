@@ -5,11 +5,9 @@ SRC 		= 	philo_bonus.c \
 				errors_bonus.c \
 				init_bonus.c \
 				time_bonus.c \
-				utils_bonus.c \
-				libft/ft_atoi.c libft/ft_split.c libft/ft_strjoin.c libft/ft_strlen.c libft/ft_strncmp.c \
-				checkup.c \
-				dinning_table.c \
 				routines_bonus.c \
+				utils.c \
+				libft/ft_atoi.c libft/ft_split.c libft/ft_strjoin.c libft/ft_strlen.c libft/ft_strncmp.c \
 
 OBJ = $(SRC:.c=.o)
 

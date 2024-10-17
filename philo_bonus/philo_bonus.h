@@ -6,7 +6,7 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 18:49:01 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/14 22:08:23 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/17 19:26:54 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,13 +19,9 @@
 # include <stdlib.h>
 # include <sys/time.h>
 # include <unistd.h>
-#include <semaphore.h>
-#include <fcntl.h>
-#include <sys/wait.h>
-
-# define SEMA_PHILO "/philosophers"
-# define SEMA_LIGHT "/sema_light"
-# define SEMA_WRITE "/sema_write"
+# include <semaphore.h>
+# include <fcntl.h>
+# include <sys/wait.h>
 
 // COLORS
 # define RED 	2001
@@ -45,12 +41,20 @@
 # define T_WHITE 		"\033[1;37m"
 # define RESET 			"\033[0m"
 
+// named semaphores
+# define SEMA_WRITE 	"/sema_write"
+# define SEMA_LIGHT 	"/sema_light"
+# define SEMA_EAT 		"/sema_eat"
+# define SEMA_THINK 	"/sema_think"
+# define SEMA_DEATH 	"/sema_death"
+
+
 // general
 # define MAX_PHILOS 	200
 # define TRUE  			1
 # define FALSE			0
 # define EXIT_FAILURE 	1
-# define EXIT_SUCCESS 	0
+# define EXIT_SUCCESS 	0	
 # define ON			 	1
 # define OFF		 	0
 
@@ -68,6 +72,11 @@ typedef struct s_info
 	int				eating;
 	int				meals_done;
 	int				forks[MAX_PHILOS];
+	sem_t			*sema_think;
+	sem_t			*sema_eat;
+	sem_t 			*sema_light;
+	sem_t			*sema_write;
+	sem_t			*sema_death;
 	pthread_mutex_t fork_locks[MAX_PHILOS]; 
 	pthread_mutex_t print_lock;
 	pthread_mutex_t eat_lock;
@@ -91,24 +100,11 @@ typedef struct s_philo
 	int				statiated;
 	long long		start_time;
 	pthread_t		t[MAX_PHILOS];
+	pthread_t		doc;
+	pthread_t		reaper;
 	pthread_mutex_t spotlight_lock;
 	pthread_mutex_t meal_lock;
 }					t_philo;
-
-typedef struct s_doctor
-{
-	t_info 			*info;
-	t_philo			*philo;
-	int				philo_count;
-	int				time_to_die;
-}					t_doctor;
-
-typedef struct s_sema
-{
-	sem_t			*sema_philo;
-	sem_t 			*sema_light;
-	sem_t			*sema_write;
-}					t_sema;
 
 // libft
 int					ft_atoi(const char *str);
@@ -124,37 +120,20 @@ void				parsing(int argc, char *argv[]);
 // init
 void				init_info(char *argv[], t_info *info);
 void 				init_philos(char **argv, t_philo *philo, t_info *info);
-void 				init_doctor(t_doctor *doctor, t_info *info, t_philo *philo);
-void 				init_mutexes(t_info *info, t_philo *philo);
 
 // errors
 void				ft_error(int flag);
 
 // routines
-// void 				eating(t_philo *philo, int index);
-// void				sleeping(t_philo *philo, int index);
-// void 				thinking(t_philo *philo, int index);
-
-// dinning_table
-void 				*dinning_table(void *args);
-int 				forks_available(t_philo *philo);
-int					spotlight(t_philo *philo, t_sema *sema);
+// void 				eating(t_info *info, t_philo *philo, t_sema *sema);
+// void 				sleeping(t_info *info, t_philo *philo, t_sema *sema);
+// void 				thinking(t_info *info, t_philo *philo, t_sema *sema);
 
 // time
 long long 			get_exact_time();
 void 				precise_usleep(t_info *info, long usec);
-void 				write_lock(t_info *info, t_philo *philo, char *str, int color);
-void 				write_sema(t_info *info, t_philo *philo, char *str, t_sema *sema);
 
-// checkup
-// void 				*checkup(void *args);
-// int 				is_dead(t_doctor *doctor, int i);
-// int 				all_ate(t_doctor *doctor, int i, int *count);
-
-// utils
-int 				all_eating(t_philo *philo);
-void 				rotate_spotlight(t_philo *philo);
-void 				mutex_lock(pthread_mutex_t *lock, int *var, int value);
-int 				all_alive(t_info *info);
+// utils.c 
+void 				write_sema(t_info *info, t_philo *philo, char *str);
 
 #endif

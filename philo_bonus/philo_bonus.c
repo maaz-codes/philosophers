@@ -6,92 +6,148 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/13 17:16:55 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/14 22:07:10 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/17 20:04:27 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
-// static void thread_creation(t_philo *philo, t_info *info)
-// {
-// 	int i;
-
-// 	i = 0;
-// 	while (i < info->philo_count)
-// 	{
-// 		pthread_create(&philo->t[i] , NULL, &dinning_table, (void *)&philo[i]);
-// 		i++;
-// 	}
-// }
-
-// static void join_and_destroy(t_info *info, t_philo *philo)
-// {
-// 	int i;
-	
-// 	i = 0;
-// 	while (i < philo->philo_count)
-// 	{
-// 		pthread_join(philo->t[i], NULL);
-// 		i++;
-// 	}
-// 	i = 0;
-// 	pthread_mutex_destroy(&info->print_lock);
-// 	pthread_mutex_destroy(&info->eat_lock);
-// 	pthread_mutex_destroy(&info->alive_lock);
-// 	while (i < info->philo_count)
-// 	{
-// 		pthread_mutex_destroy(&info->fork_locks[i]);
-// 		pthread_mutex_destroy(&info->reset_lock[i]);
-// 		pthread_mutex_destroy(&philo[i].spotlight_lock);
-// 		pthread_mutex_destroy(&philo[i].meal_lock);
-// 		i++;
-// 	}
-// }
-
-void dinning(t_philo *philo, t_info *info, t_sema *sema)
+int	spotlight(t_philo *philo)
 {
-	// sem_wait(sema);
-	// printf("%lld PHILO %i ARRIVED\n", get_exact_time() - info->start_program_time, philo->id);
-	while (1)
-	{
-		if (spotlight(philo, sema) == OFF)
-		{
-			precise_usleep(info, 100);	
-			write_sema(info , philo, "HAS STARTED THINKING\n", sema);
-			rotate_spotlight(philo);
-		}
-		sem_wait(sema->sema_philo);
-		if (spotlight(philo, sema) == ON)
-		{
-			// sem_wait(sema->sema_write);
-			write_sema(info , philo, "HAS STARTED EATING", sema);
-			// printf("%lld %i HAS STARTED EATING\n", get_exact_time() - info->start_program_time, philo->id);
-			// sem_post(sema->sema_write);
-			// precise_usleep(info, philo->time_to_eat);
-			precise_usleep(info, 1000 * 1000); // eating
-			rotate_spotlight(philo);
-			
-			// sem_wait(sema->sema_write);
-			write_sema(info , philo, "HAS STARTED EATING", sema);
-			// printf("%lld %i HAS STARTED SLEEPING\n", get_exact_time() - info->start_program_time, philo->id);
-			// sem_post(sema->sema_write);
-			precise_usleep(info, 1000 * 1000); // sleeping
-			rotate_spotlight(philo);
-		}
-		else
-		{
-			write_sema(info , philo, "HAS STARTED THINKING", sema);
-			// printf("%lld %i HAS STARTED THINKING\n", get_exact_time() - info->start_program_time, philo->id);
-			precise_usleep(info, 1000 * 1000);
-			rotate_spotlight(philo);
-		}
-		sem_post(sema->sema_philo);
-	}
-	// sleep(1);
-	// sem_post(sema);
+	int flag;
+
+	flag = OFF;
+	if(philo->spotlight % 2 == 0)
+		flag = ON;
+	return (flag);
 }
 
-void process_creation(t_philo *philo, t_info *info, t_sema *sema)
+void rotate_spotlight(t_philo *philo)
+{
+	if (philo->spotlight == philo->philo_count)
+		philo->spotlight = 1;
+	else
+		philo->spotlight += 1;
+}
+
+void release_thinkers(t_info *info, t_philo *philo)
+{
+	if (philo->spotlight == 2 && philo->philo_count % 2 != 0) 
+		sem_post(info->sema_think);
+	sem_post(info->sema_think);
+}
+
+void eating(t_info *info, t_philo *philo)
+{
+	write_sema(info, philo, "is eating");
+	precise_usleep(info, philo->time_to_eat * 1000);
+	philo->start_time = get_exact_time(); // reset_time
+	release_thinkers(info, philo);
+	rotate_spotlight(philo);
+}
+
+void sleeping(t_info *info, t_philo *philo)
+{
+	write_sema(info, philo, "is sleeping");
+	precise_usleep(info, philo->time_to_sleep * 1000);
+	rotate_spotlight(philo);
+}
+
+void thinking(t_info *info, t_philo *philo)
+{
+	write_sema(info, philo, "is thinking");
+	rotate_spotlight(philo);
+	// precise_usleep(info, 100);
+}
+
+void sema_unlink(t_info *info)
+{
+	sem_close(info->sema_write);
+	sem_close(info->sema_light);
+	sem_close(info->sema_eat);
+	sem_close(info->sema_think);
+	sem_close(info->sema_death);
+	sem_unlink(SEMA_WRITE);
+	sem_unlink(SEMA_LIGHT);
+	sem_unlink(SEMA_EAT);
+	sem_unlink(SEMA_THINK);
+	sem_unlink(SEMA_DEATH);
+}
+
+void dinning(t_philo *philo, t_info *info)
+{
+	while (info->all_alive == TRUE)
+	{
+		if (spotlight(philo) == OFF)
+		{
+			thinking(info, philo);
+			sem_wait(info->sema_think);
+		}
+		if (spotlight(philo) == ON)
+		{
+			eating(info, philo);
+			sleeping(info, philo);
+		}
+	}
+}
+
+int is_dead(t_philo *philo)
+{
+	if (get_exact_time() - philo->start_time > philo->time_to_die)
+		return (TRUE);
+	else
+		return (FALSE);
+}
+int is_full(t_philo *philo)
+{
+	return (FALSE);
+}
+
+void massacre(t_philo *philo)
+{
+	int i;
+
+	i = 0;
+ 	while (i < philo->info->philo_count)
+	{
+		sem_post(philo->info->sema_death);
+		i++;
+	}
+}
+
+void *clinic(void *args)
+{
+	t_philo *philo;
+
+	philo = (t_philo *)args;
+	// race_condition ?
+	while (philo->info->all_alive == TRUE)
+	{
+        if (is_dead(philo) == TRUE || is_full(philo) == TRUE)
+            break ;
+		precise_usleep(philo->info, 100); // Added to prevent busy waiting
+	}
+	// race_condition ? 
+	philo->info->all_alive = FALSE;
+	massacre(philo);
+	return (NULL);
+}
+
+void *graveyard(void *args)
+{
+	t_philo *philo;
+
+	philo = (t_philo *)args;
+	sem_wait(philo->info->sema_death);
+	
+	{
+		// dinner is over.
+		// ending printing...
+	}
+	return (NULL);
+}
+
+void process_creation(t_philo *philo, t_info *info)
 {
 	int i;
 	int pid;
@@ -102,18 +158,19 @@ void process_creation(t_philo *philo, t_info *info, t_sema *sema)
 		pid = fork();
 		if (pid == -1)
 			ft_error(MUTEX_FAIL); // change it to process fail
-		if (pid == 0)
+		else if (pid == 0)
 		{
-			dinning(&philo[i], info, sema);
-			sem_close(sema->sema_light);
-			sem_close(sema->sema_write);
+			pthread_create(&philo->doc, NULL, &clinic, (void *)philo);
+			pthread_create(&philo->reaper, NULL, &graveyard, (void *)philo);
+			dinning(&philo[i], info);
+			sem_close(info->sema_write);
 			exit(EXIT_SUCCESS);
 		}
 		i++;
 	}
 }
 
-void waiting(t_info *info, t_sema *sema)
+void waiting(t_info *info)
 {
 	int i;
 
@@ -122,43 +179,23 @@ void waiting(t_info *info, t_sema *sema)
 	{
 		wait(NULL);
 		i++;
-	}	
-	sem_close(sema->sema_philo);
-	sem_close(sema->sema_light);
-	sem_close(sema->sema_write);
-	sem_unlink(SEMA_PHILO);
-	sem_unlink(SEMA_LIGHT);
-	sem_unlink(SEMA_WRITE);
+	}	 
+	sema_unlink(info);
 }
 
 int	main(int argc, char *argv[])
 {
 	t_philo			philo[MAX_PHILOS];
 	t_info  		info;
-	t_doctor		doctor;
-	pthread_t		td;
-	// sem_t 			*sem;
-	t_sema			*sema;
-	
-	sema = (t_sema *)malloc(sizeof(t_sema));
+
+	sema_unlink(&info);
 	if (argc == 5 || argc == 6)
 	{
 		parsing(argc, argv);
 		init_info(argv, &info);
-		init_philos(argv, philo, &info);
-		// sem = sem_open(SEMA_NAME, O_CREAT, 0664, info.philo_count);
-		printf("running\n");
-		sema->sema_light = sem_open(SEMA_LIGHT, O_CREAT, 0664, 1);
-		sema->sema_write = sem_open(SEMA_WRITE, O_CREAT, 0664, 1);
-		sema->sema_philo = sem_open(SEMA_WRITE, O_CREAT, 0664, info.philo_count / 2);
-		// init_mutexes(&info, philo);
-		// init_doctor(&doctor, &info, philo);
-		// thread_creation(philo, &info);
-		process_creation(philo, &info, sema);
-		waiting(&info, sema);
-		// pthread_create(&td, NULL, &checkup, (void *)&doctor);
-		// pthread_join(td, NULL);
-		// join_and_destroy(&info, philo);
+		init_philos(argv, philo, &info);   
+		process_creation(philo, &info);
+		waiting(&info);
 		return (0);
 	}
 	ft_error(WRONG_FORMAT);
