@@ -6,7 +6,7 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 18:06:45 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/14 21:57:12 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/20 18:12:01 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ void precise_usleep(t_info *info, long usec)
         gettimeofday(&current, NULL);
         elapsed = get_elapsed_time_microseconds(start, current);
         rem = usec - elapsed;
-// && all_alive(info) == TRUE
         if (rem > 1000)
             usleep(rem / 2);
         

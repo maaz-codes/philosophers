@@ -6,7 +6,7 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 18:45:50 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/17 19:28:51 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/20 22:46:07 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,11 @@ void init_info(char *argv[], t_info *info)
 	info->philo_count = ft_atoi(argv[1]);
 	info->all_alive = TRUE;
 	info->eating = FALSE;
-	info->meals_done = FALSE;
+	info->all_full = FALSE;
+	info->dinner_ended = FALSE;
 	info->sema_write = sem_open(SEMA_WRITE, O_CREAT, 0644, 1);
 	info->sema_light = sem_open(SEMA_LIGHT, O_CREAT, 0644, 1);
+	info->sema_forks = sem_open(SEMA_FORKS, O_CREAT, 0644, info->philo_count);
 	info->sema_eat = sem_open(SEMA_EAT, O_CREAT, 0644, info->philo_count / 2);
 	info->sema_think = sem_open(SEMA_THINK, O_CREAT, 0644, 0);
 	info->sema_death = sem_open(SEMA_DEATH, O_CREAT, 0644, 0);
@@ -56,6 +58,9 @@ void init_philos(char **argv, t_philo *philo, t_info *info)
 			philo[i].max_meals = -1;
 		philo[i].meal_count = 0;
 		philo[i].statiated = FALSE;
+		philo[i].is_dead = FALSE;
+		philo[i].leader = FALSE;
+		philo[i].slept = FALSE;
 		philo[i].start_time = get_exact_time();
 		i++;
 	}

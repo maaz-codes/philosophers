@@ -6,41 +6,58 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 18:06:50 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/16 13:32:05 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/20 22:44:21 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
-// void eating(t_info *info, t_philo *philo, t_sema *sema)
-// {
-//     // sem_wait(sema->sema_write);
-//     write_sema(info , philo, "HAS STARTED EATING", sema);
-//     // printf("%lld %i HAS STARTED EATING\n", get_exact_time() - info->start_program_time, philo->id);
-//     // sem_post(sema->sema_write);
-//     // precise_usleep(info, philo->time_to_eat);
-//     precise_usleep(info, 1000 * 1000); // eating
-//     rotate_spotlight(philo);
-// }
+int eating(t_info *info, t_philo *philo)
+{
+	int flag;
 
-// void sleeping(t_info *info, t_philo *philo, t_sema *sema)
-// {
-//     // sem_wait(sema->sema_write);
-//     write_sema(info , philo, "HAS STARTED SLEEPING", sema);
-//     // printf("%lld %i HAS STARTED SLEEPING\n", get_exact_time() - info->start_program_time, philo->id);
-//     // sem_post(sema->sema_write);
-//     precise_usleep(info, 1000 * 1000); // sleeping
-//     rotate_spotlight(philo);
-// }
+	flag = 0;
+	if (info->all_alive == FALSE || info->all_full == TRUE)
+	{
+		release_thinkers(info, philo);	
+		return (flag);
+	}
+	sem_wait(info->sema_forks);
+	sem_wait(info->sema_forks);
+	write_sema(info, philo, "has taken a fork");
+	write_sema(info, philo, "has taken a fork");
+	write_sema(info, philo, "is eating");
+	if (precise_usleep(philo->time_to_eat * 1000, philo))
+	{
+		philo->start_time = get_exact_time(); // reset_time
+		flag = 1;
+	}
+	sem_post(info->sema_forks);
+	sem_post(info->sema_forks);
+	release_thinkers(info, philo);
+	rotate_spotlight(philo);
+	return (flag);
+}
 
-// void thinking(t_info *info, t_philo *philo, t_sema *sema)
-// {
-//     precise_usleep(info, 1000 * 1000);	
-//     printf("enter\n");
-//     // sem_wait(sema->sema_write);
-//     // printf("THINKING\n");
-//     // sem_post(sema->sema_write);
-//     write_sema(info , philo, "HAS STARTED THINKING\n", sema);
-//     // printf("running\n");
-//     rotate_spotlight(philo);
-// }
+int sleeping(t_info *info, t_philo *philo)
+{
+	if (info->all_alive == FALSE && info->all_full == TRUE)
+		return (0);
+	write_sema(info, philo, "is sleeping");
+	if (!precise_usleep(philo->time_to_sleep * 1000, philo))
+		return (0);
+	rotate_spotlight(philo);
+	return (1);
+}
+
+int thinking(t_info *info, t_philo *philo)
+{
+	if (info->all_alive == FALSE || info->all_full == TRUE)
+		return (0);
+	write_sema(info, philo, "is thinking");
+	if (philo->philo_count == 1)
+		return (precise_usleep(1000 + philo->time_to_die * 1000, philo));  
+	// precise_usleep(100, philo);
+	rotate_spotlight(philo);
+	return (1);
+}

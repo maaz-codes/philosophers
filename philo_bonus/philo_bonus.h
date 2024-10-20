@@ -6,7 +6,7 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 18:49:01 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/17 19:26:54 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/20 22:39:19 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 # include <semaphore.h>
 # include <fcntl.h>
 # include <sys/wait.h>
+# include <signal.h>
 
 // COLORS
 # define RED 	2001
@@ -47,6 +48,7 @@
 # define SEMA_EAT 		"/sema_eat"
 # define SEMA_THINK 	"/sema_think"
 # define SEMA_DEATH 	"/sema_death"
+# define SEMA_FORKS 		"/sema_forks"
 
 
 // general
@@ -70,17 +72,15 @@ typedef struct s_info
 	int				philo_count;
 	int 			all_alive;
 	int				eating;
-	int				meals_done;
+	int				all_full;
+	int				dinner_ended;
 	int				forks[MAX_PHILOS];
 	sem_t			*sema_think;
 	sem_t			*sema_eat;
 	sem_t 			*sema_light;
 	sem_t			*sema_write;
 	sem_t			*sema_death;
-	pthread_mutex_t fork_locks[MAX_PHILOS]; 
-	pthread_mutex_t print_lock;
-	pthread_mutex_t eat_lock;
-	pthread_mutex_t alive_lock;
+	sem_t			*sema_forks;
 	pthread_mutex_t	reset_lock[MAX_PHILOS];
 }					t_info;
 
@@ -98,6 +98,9 @@ typedef struct s_philo
 	int				max_meals;
 	int				meal_count;
 	int				statiated;
+	int 			is_dead;
+	int 			leader;
+	int 			slept;
 	long long		start_time;
 	pthread_t		t[MAX_PHILOS];
 	pthread_t		doc;
@@ -125,15 +128,20 @@ void 				init_philos(char **argv, t_philo *philo, t_info *info);
 void				ft_error(int flag);
 
 // routines
-// void 				eating(t_info *info, t_philo *philo, t_sema *sema);
-// void 				sleeping(t_info *info, t_philo *philo, t_sema *sema);
-// void 				thinking(t_info *info, t_philo *philo, t_sema *sema);
+int 				eating(t_info *info, t_philo *philo);
+int 				sleeping(t_info *info, t_philo *philo);
+int 				thinking(t_info *info, t_philo *philo);
 
 // time
 long long 			get_exact_time();
-void 				precise_usleep(t_info *info, long usec);
+int 				precise_usleep(long usec, t_philo *philo);
 
 // utils.c 
 void 				write_sema(t_info *info, t_philo *philo, char *str);
+int 				all_alive(t_philo *philo);
+int 				all_full(t_philo *philo);
+void 				release_thinkers(t_info *info, t_philo *philo);
+int					spotlight(t_philo *philo);
+void 				rotate_spotlight(t_philo *philo);
 
 #endif
