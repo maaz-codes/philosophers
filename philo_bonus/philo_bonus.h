@@ -6,7 +6,7 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 18:49:01 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/20 22:39:19 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/21 21:55:47 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,10 +45,9 @@
 // named semaphores
 # define SEMA_WRITE 	"/sema_write"
 # define SEMA_LIGHT 	"/sema_light"
-# define SEMA_EAT 		"/sema_eat"
 # define SEMA_THINK 	"/sema_think"
 # define SEMA_DEATH 	"/sema_death"
-# define SEMA_FORKS 		"/sema_forks"
+# define SEMA_FORKS 	"/sema_forks"
 
 
 // general
@@ -76,12 +75,11 @@ typedef struct s_info
 	int				dinner_ended;
 	int				forks[MAX_PHILOS];
 	sem_t			*sema_think;
-	sem_t			*sema_eat;
 	sem_t 			*sema_light;
 	sem_t			*sema_write;
 	sem_t			*sema_death;
 	sem_t			*sema_forks;
-	pthread_mutex_t	reset_lock[MAX_PHILOS];
+	sem_t			*sema_meals;
 }					t_info;
 
 typedef struct s_philo
@@ -102,11 +100,7 @@ typedef struct s_philo
 	int 			leader;
 	int 			slept;
 	long long		start_time;
-	pthread_t		t[MAX_PHILOS];
-	pthread_t		doc;
 	pthread_t		reaper;
-	pthread_mutex_t spotlight_lock;
-	pthread_mutex_t meal_lock;
 }					t_philo;
 
 // libft
@@ -143,5 +137,7 @@ int 				all_full(t_philo *philo);
 void 				release_thinkers(t_info *info, t_philo *philo);
 int					spotlight(t_philo *philo);
 void 				rotate_spotlight(t_philo *philo);
+// int 				check_all_alive(t_philo *philo);
+// int 				check_all_full(t_philo *philo);
 
 #endif

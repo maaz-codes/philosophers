@@ -9,7 +9,7 @@ void write_sema(t_info *info, t_philo *philo, char *str)
 }
 
 int all_alive(t_philo *philo)
-{
+{	
 	if (get_exact_time() - philo->start_time > philo->time_to_die)
 	{
 		philo->info->all_alive = FALSE;
@@ -63,3 +63,27 @@ void rotate_spotlight(t_philo *philo)
 	else
 		philo->spotlight += 1;
 }
+
+// int check_all_alive(t_philo *philo)
+// {
+// 	int flag;
+
+// 	flag = TRUE;
+// 	sem_wait(philo->info->sema_alive);
+// 	if (philo->info->all_alive == FALSE)
+// 		flag = FALSE;
+// 	sem_post(philo->info->sema_alive);
+// 	return (flag);
+// }
+
+// int check_all_full(t_philo *philo)
+// {
+// 	int flag;
+
+// 	flag = FALSE;
+// 	sem_wait(philo->info->sema_all_full);
+// 	if (philo->info->all_full == TRUE)
+// 		flag = TRUE;
+// 	sem_post(philo->info->sema_all_full);
+// 	return (flag);
+// }

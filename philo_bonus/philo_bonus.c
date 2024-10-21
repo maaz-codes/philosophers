@@ -6,26 +6,34 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/13 17:16:55 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/20 22:43:03 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/21 22:08:59 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
-void sema_unlink(t_info *info)
+void sema_close(t_info *info)
 {
 	sem_close(info->sema_write);
 	sem_close(info->sema_light);
-	sem_close(info->sema_eat);
+	// sem_close(info->sema_eat);
 	sem_close(info->sema_think);
 	sem_close(info->sema_death);
 	sem_close(info->sema_forks);
+	// sem_close(info->sema_alive);
+	// sem_close(info->sema_all_full);
+}
+
+void sema_unlink(t_info *info)
+{
 	sem_unlink(SEMA_WRITE);
 	sem_unlink(SEMA_LIGHT);
-	sem_unlink(SEMA_EAT);
+	// sem_unlink(SEMA_EAT);
 	sem_unlink(SEMA_THINK);
 	sem_unlink(SEMA_DEATH);
 	sem_unlink(SEMA_FORKS);
+	// sem_unlink(SEMA_ALIVE);
+	// sem_unlink(SEMA_ALL_FULL);
 }
 
 void massacre(t_philo *philo)
@@ -36,6 +44,7 @@ void massacre(t_philo *philo)
 	sem_wait(philo->info->sema_write);
 	if (philo->info->dinner_ended == FALSE)
 	{
+		// if (check_all_alive(philo) == FALSE)
 		if (philo->info->all_alive == FALSE)
 			printf("%lld %i is Dead\n", get_exact_time() - philo->info->start_program_time, philo->id);
 		else	
@@ -46,12 +55,13 @@ void massacre(t_philo *philo)
 			i++;
 		}
 	}
-	usleep(250);
+	usleep(500);
 	sem_post(philo->info->sema_write);
 }
 
 void dinning(t_philo *philo, t_info *info)
 {
+	// while (check_all_alive(philo) == TRUE && check_all_full(philo) == FALSE)
 	while (info->all_alive == TRUE && info->all_full == FALSE)
 	{
 		if (spotlight(philo) == OFF)
@@ -72,9 +82,7 @@ void dinning(t_philo *philo, t_info *info)
 		}
 	}
 	if (philo->leader == TRUE)
-	{
 		massacre(philo);
-	}
 }
 
 void *graveyard(void *args)
@@ -83,10 +91,9 @@ void *graveyard(void *args)
 
 	philo = (t_philo *)args;
 	sem_wait(philo->info->sema_death);
-	{
-		philo->info->all_alive = FALSE;
-		philo->info->dinner_ended = TRUE;
-	}
+	// sem_post(philo->info->sema_forks);
+	// sem_post(philo->info->sema_forks);
+	exit(1);
 	return (NULL);
 }
 
@@ -105,12 +112,8 @@ void process_creation(t_philo *philo, t_info *info)
 		{
 			pthread_create(&philo->reaper, NULL, &graveyard, (void *)philo);
 			dinning(&philo[i], info);
-			sem_close(info->sema_write);
-			sem_close(info->sema_eat);
-			sem_close(info->sema_light);
-			sem_close(info->sema_think);
-			sem_close(info->sema_death);
-			sem_close(info->sema_forks);
+			sema_close(info);
+			pthread_join(philo->reaper, NULL);
 			exit(EXIT_SUCCESS);
 		}
 		i++;
@@ -127,6 +130,7 @@ void waiting(t_info *info)
 		wait(NULL);
 		i++;
 	}	 
+	sema_close(info);
 	sema_unlink(info);
 }
 

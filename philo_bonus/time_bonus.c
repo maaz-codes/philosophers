@@ -6,7 +6,7 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 18:06:45 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/20 20:30:26 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/21 22:00:10 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,7 @@ int precise_usleep(long usec, t_philo *philo)
 	struct timeval	current;
 	long			elapsed;
 	long			rem;
-	long			last_check;
 
-	last_check = 0;
 	elapsed = 0;
 	gettimeofday(&start, NULL);
 	while (elapsed < usec)
@@ -44,12 +42,8 @@ int precise_usleep(long usec, t_philo *philo)
 		gettimeofday(&current, NULL);
 		elapsed = get_elapsed_time_microseconds(start, current);
 		rem = usec - elapsed;
-		// if (elapsed - last_check >= (100 * 1000))
-		// {
-			// last_check = elapsed;
-		// }
 		if (rem > 1000)
-			usleep(100);
+			usleep(250);
 		if (all_alive(philo) == FALSE || all_full(philo) == TRUE)
 			return (0);
 			// usleep(rem / 2);

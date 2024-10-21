@@ -6,7 +6,7 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 18:06:50 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/20 22:44:21 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/21 21:53:08 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ int eating(t_info *info, t_philo *philo)
 	int flag;
 
 	flag = 0;
+	// if (check_all_alive(philo) == FALSE || check_all_full(philo) == TRUE)
 	if (info->all_alive == FALSE || info->all_full == TRUE)
 	{
 		release_thinkers(info, philo);	
@@ -41,6 +42,7 @@ int eating(t_info *info, t_philo *philo)
 
 int sleeping(t_info *info, t_philo *philo)
 {
+	// if (check_all_alive(philo) == FALSE || check_all_full(philo) == TRUE)
 	if (info->all_alive == FALSE && info->all_full == TRUE)
 		return (0);
 	write_sema(info, philo, "is sleeping");
@@ -52,6 +54,7 @@ int sleeping(t_info *info, t_philo *philo)
 
 int thinking(t_info *info, t_philo *philo)
 {
+	// if (check_all_alive(philo) == FALSE || check_all_full(philo) == TRUE)
 	if (info->all_alive == FALSE || info->all_full == TRUE)
 		return (0);
 	write_sema(info, philo, "is thinking");

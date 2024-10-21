@@ -6,7 +6,7 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 18:45:50 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/20 22:46:07 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/21 21:55:08 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,11 @@ void init_info(char *argv[], t_info *info)
 	info->sema_write = sem_open(SEMA_WRITE, O_CREAT, 0644, 1);
 	info->sema_light = sem_open(SEMA_LIGHT, O_CREAT, 0644, 1);
 	info->sema_forks = sem_open(SEMA_FORKS, O_CREAT, 0644, info->philo_count);
-	info->sema_eat = sem_open(SEMA_EAT, O_CREAT, 0644, info->philo_count / 2);
+	// info->sema_eat = sem_open(SEMA_EAT, O_CREAT, 0644, info->philo_count / 2);
 	info->sema_think = sem_open(SEMA_THINK, O_CREAT, 0644, 0);
 	info->sema_death = sem_open(SEMA_DEATH, O_CREAT, 0644, 0);
+	// info->sema_alive = sem_open(SEMA_ALIVE, O_CREAT, 0644, 1);
+	// info->sema_all_full = sem_open(SEMA_ALIVE, O_CREAT, 0644, 1);
 	i = 0;
 	while (i < info->philo_count)
 	{
