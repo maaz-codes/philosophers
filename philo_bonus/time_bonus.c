@@ -6,7 +6,7 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 18:06:45 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/21 22:00:10 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/22 19:26:59 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,9 +44,9 @@ int precise_usleep(long usec, t_philo *philo)
 		rem = usec - elapsed;
 		if (rem > 1000)
 			usleep(250);
+			// usleep(rem / 2);
 		if (all_alive(philo) == FALSE || all_full(philo) == TRUE)
 			return (0);
-			// usleep(rem / 2);
 	}
 	return (1);
 }

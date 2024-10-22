@@ -30,7 +30,6 @@ void release_thinkers(t_info *info, t_philo *philo)
 {
 	int  i;
 
-	// if (philo->info->all_alive == FALSE || philo->info->all_full == TRUE)
 	if (philo->leader == TRUE)
 	{
 		i = 0;

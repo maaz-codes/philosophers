@@ -6,7 +6,7 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 18:06:50 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/21 21:53:08 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/22 19:33:34 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,6 @@ int thinking(t_info *info, t_philo *philo)
 	write_sema(info, philo, "is thinking");
 	if (philo->philo_count == 1)
 		return (precise_usleep(1000 + philo->time_to_die * 1000, philo));  
-	// precise_usleep(100, philo);
 	rotate_spotlight(philo);
 	return (1);
 }

@@ -6,7 +6,7 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 18:49:01 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/21 21:55:47 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/22 19:17:13 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@
 # define WRONG_FORMAT	1001
 # define WRONG_CHARS	1002
 # define WRONG_ARGS		1003
-# define MUTEX_FAIL		1004
+# define FORK_FAIL		1005
 
 typedef struct s_info
 {
