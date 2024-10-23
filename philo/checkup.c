@@ -6,7 +6,7 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 10:13:41 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/12 15:58:48 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/23 19:32:06 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,11 +23,14 @@ int is_dead(t_doctor *doctor, int i)
     flag = FALSE;
     if (time > doctor->time_to_die)
     {
-        write_lock(doctor->info, &doctor->philo[i], "HAS DIED", RED);
-        // mutex_lock(&doctor->info->alive_lock, &doctor->info->all_alive, FALSE);
-        pthread_mutex_lock(&doctor->info->alive_lock);
-        doctor->info->all_alive = FALSE;
-        pthread_mutex_unlock(&doctor->info->alive_lock);
+        mutex_lock(&doctor->info->alive_lock, &doctor->info->all_alive, FALSE);
+        pthread_mutex_lock(&doctor->info->print_lock);
+        printf("%lld %i HAS DIED\n",   get_exact_time() - doctor->info->start_program_time, doctor->philo[i].id);
+        pthread_mutex_unlock(&doctor->info->print_lock);
+        // write_lock(doctor->info, &doctor->philo[i], "HAS DIED", RED);
+        // pthread_mutex_lock(&doctor->info->alive_lock);
+        // doctor->info->all_alive = FALSE;
+        // pthread_mutex_unlock(&doctor->info->alive_lock);
         flag = TRUE;
     }
     return (flag);
@@ -81,7 +84,7 @@ void *checkup(void *args)
                 break ;
             i++;
         }
-		precise_usleep(doctor->info, 100); // Added to prevent busy waiting
+        // usleep(100); // Added to prevent busy waiting
 	}
 	return (NULL);
 }

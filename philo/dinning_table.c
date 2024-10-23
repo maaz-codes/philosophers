@@ -6,7 +6,7 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 14:25:48 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/12 15:54:35 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/23 21:02:39 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,10 @@ void	*dinning_table(void *args)
 		if (spotlight(philo) == ON)
 		{
 			while (forks_available(philo) == FALSE)
-				precise_usleep(philo->info, 1);
+			{
+				if (precise_usleep(philo, 10) == 0)
+					break ;
+			}
 			mutex_lock(&philo->info->fork_locks[philo->own_fork],
 				&philo->info->forks[philo->own_fork], philo->id);
 			write_lock(philo->info, philo, "HAS TAKEN A FORK ON SPOTLIGHT:",

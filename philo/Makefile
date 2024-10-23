@@ -9,12 +9,12 @@ SRC 		= 	philo.c \
 				time.c \
 				checkup.c \
 				utils.c \
-				libft/ft_atoi.c libft/ft_split.c libft/ft_strjoin.c libft/ft_strlen.c libft/ft_strncmp.c \
+				helpers/ft_atoi.c helpers/ft_split.c helpers/ft_strlen.c \
 
 OBJ = $(SRC:.c=.o)
 
 CC = cc
-CFLAGS = -g3 -O3 # -Wall -Wextra
+CFLAGS = # -Wall -Wextra
 LDFLAGS = -lpthread
 
 REM		=	rm -rf

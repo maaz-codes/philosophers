@@ -6,7 +6,7 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 10:06:04 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/11 18:03:06 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/23 17:18:47 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,5 +29,19 @@ void	ft_error(int flag)
 		printf("\033[1;31m MUTEX FOR FORK FAILED!\033[0m");
 	else if (flag == MUTEX_FAIL)
 		printf("\033[1;31m MUTEX FOR PRINT FAILED!\033[0m");
+	else if (flag == THREAD_FAIL)
+		printf("\033[1;31m THREAD FAILED!\033[0m");
 	exit(EXIT_FAILURE);
+}
+
+void	create_thread(pthread_t *t, void *(*routine)(void *), void *args)
+{
+	if (pthread_create(t, NULL, routine, (void *)args) != 0)
+		ft_error(THREAD_FAIL);
+}
+
+void	join_thread(pthread_t *t)
+{
+	if (pthread_join(*t, NULL) != 0)
+		ft_error(THREAD_FAIL);
 }

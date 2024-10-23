@@ -6,7 +6,7 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 18:49:01 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/12 17:53:18 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/23 17:34:45 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@
 # define WRONG_CHARS	1002
 # define WRONG_ARGS		1003
 # define MUTEX_FAIL		1004
+# define THREAD_FAIL	1005
 
 typedef struct s_info
 {
@@ -97,12 +98,10 @@ typedef struct s_doctor
 }					t_doctor;
 
 // libft
-// int					ft_atoi(const char *str);
+int					ft_atoi(const char *str);
 char				*ft_atol_modified(char *str, long long *n);
 char				**ft_split(const char *s, char c);
-char				*ft_strjoin(char const *s1, char const *s2);
 size_t				ft_strlen(const char *str);
-int					ft_strncmp(const char *s1, const char *s2, size_t n);
 
 // parsing
 void				parsing(int argc, char *argv[]);
@@ -115,6 +114,8 @@ void 				init_mutexes(t_info *info, t_philo *philo);
 
 // errors
 void				ft_error(int flag);
+void				create_thread(pthread_t *t, void *(*routine)(void *), void *args);
+void				join_thread(pthread_t *t);
 
 // routines
 void 				eating(t_philo *philo, int index);
@@ -128,7 +129,7 @@ int					spotlight(t_philo *philo);
 
 // time
 long long 			get_exact_time();
-void 				precise_usleep(t_info *info, long usec);
+int 				precise_usleep(t_philo *philo, long usec);
 void 				write_lock(t_info *info, t_philo *philo, char *str, int color);
 
 // checkup

@@ -6,7 +6,7 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 18:45:32 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/11 16:39:08 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/23 19:33:15 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,8 @@ static void thread_creation(t_philo *philo, t_info *info)
 	i = 0;
 	while (i < info->philo_count)
 	{
-		pthread_create(&philo->t[i] , NULL, &dinning_table, (void *)&philo[i]);
+		create_thread(&philo->t[i], &dinning_table, (void *)&philo[i]);
+		// pthread_create(&philo->t[i] , NULL, &dinning_table, (void *)&philo[i]);
 		i++;
 	}
 }
@@ -31,7 +32,8 @@ static void join_and_destroy(t_info *info, t_philo *philo)
 	i = 0;
 	while (i < philo->philo_count)
 	{
-		pthread_join(philo->t[i], NULL);
+		join_thread(&philo->t[i]);
+		// pthread_join(philo->t[i], NULL);
 		i++;
 	}
 	i = 0;
@@ -62,8 +64,8 @@ int	main(int argc, char *argv[])
 		init_philos(argv, philo, &info);
 		init_mutexes(&info, philo);
 		init_doctor(&doctor, &info, philo);
-		thread_creation(philo, &info);
 		pthread_create(&td, NULL, &checkup, (void *)&doctor);
+		thread_creation(philo, &info);
 		pthread_join(td, NULL);
 		join_and_destroy(&info, philo);
 		return (0);

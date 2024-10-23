@@ -6,7 +6,7 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 10:10:54 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/12 17:57:03 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/23 17:17:42 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,25 +20,36 @@ static int	is_number(char c)
 		return (0);
 }
 
-static void check_args(char *argv[])
+static void	check_args(char *argv[], int argc)
 {
-	long long count;
-	long long t_die;
-	long long t_eat;
-	long long t_sleep;
-	
-	if (!ft_atol_modified(argv[1], &count) || !ft_atol_modified(argv[2], &t_die) 
-	|| !ft_atol_modified(argv[3], &t_eat) || !ft_atol_modified(argv[4], &t_sleep))
+	long long	count;
+	long long	t_die;
+	long long	t_eat;
+	long long	t_sleep;
+	long long	meals;
+
+	if (!ft_atol_modified(argv[1], &count) || !ft_atol_modified(argv[2], &t_die)
+		|| !ft_atol_modified(argv[3], &t_eat) || !ft_atol_modified(argv[4],
+			&t_sleep))
 	{
 		ft_error(WRONG_ARGS);
 	}
-	if (count > 200 || t_die < 60 || t_eat < 60 ||  t_sleep < 60)
+	if (count > 200 || t_die < 60 || t_eat < 60 || t_sleep < 60)
 	{
 		ft_error(WRONG_ARGS);
+	}
+	if (argc == 6)
+	{
+		if (!ft_atol_modified(argv[5], &meals))
+			ft_error(WRONG_ARGS);
+		if (meals < 0)
+			ft_error(WRONG_ARGS);
+		if (meals == 0)
+			exit(EXIT_SUCCESS);
 	}
 }
 
-void parsing(int argc, char *argv[])
+void	parsing(int argc, char *argv[])
 {
 	int	i;
 	int	j;
@@ -55,5 +66,5 @@ void parsing(int argc, char *argv[])
 		}
 		i++;
 	}
-	check_args(argv);
+	check_args(argv, argc);
 }
