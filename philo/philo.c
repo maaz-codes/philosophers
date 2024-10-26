@@ -6,34 +6,32 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 18:45:32 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/23 19:33:15 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/26 20:22:14 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static void thread_creation(t_philo *philo, t_info *info)
+static void	thread_creation(t_philo *philo, t_info *info)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (i < info->philo_count)
 	{
 		create_thread(&philo->t[i], &dinning_table, (void *)&philo[i]);
-		// pthread_create(&philo->t[i] , NULL, &dinning_table, (void *)&philo[i]);
 		i++;
 	}
 }
 
-static void join_and_destroy(t_info *info, t_philo *philo)
+static void	join_and_destroy(t_info *info, t_philo *philo)
 {
-	int i;
-	
+	int	i;
+
 	i = 0;
 	while (i < philo->philo_count)
 	{
 		join_thread(&philo->t[i]);
-		// pthread_join(philo->t[i], NULL);
 		i++;
 	}
 	i = 0;
@@ -52,11 +50,11 @@ static void join_and_destroy(t_info *info, t_philo *philo)
 
 int	main(int argc, char *argv[])
 {
-	t_philo			philo[MAX_PHILOS];
-	t_info  		info;
-	t_doctor		doctor;
-	pthread_t		td;
-	
+	t_philo		philo[MAX_PHILOS];
+	t_info		info;
+	t_doctor	doctor;
+	pthread_t	td;
+
 	if (argc == 5 || argc == 6)
 	{
 		parsing(argc, argv);
@@ -64,8 +62,8 @@ int	main(int argc, char *argv[])
 		init_philos(argv, philo, &info);
 		init_mutexes(&info, philo);
 		init_doctor(&doctor, &info, philo);
-		pthread_create(&td, NULL, &checkup, (void *)&doctor);
 		thread_creation(philo, &info);
+		pthread_create(&td, NULL, &checkup, (void *)&doctor);
 		pthread_join(td, NULL);
 		join_and_destroy(&info, philo);
 		return (0);

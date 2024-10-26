@@ -6,7 +6,7 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 18:06:45 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/23 14:57:26 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/26 20:36:10 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ static long	get_elapsed_time_microseconds(struct timeval start,
 			- start.tv_usec));
 }
 
-int	precise_usleep(long usec, t_philo *philo)
+int	precise_usleep(long long usec, t_philo *philo)
 {
 	struct timeval	start;
 	struct timeval	current;

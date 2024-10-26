@@ -15,7 +15,7 @@ OBJ = $(SRC:.c=.o)
 
 CC = cc
 CFLAGS = # -Wall -Wextra
-# LDFLAGS = -lpthread
+LDFLAGS = -lpthread
 
 REM		=	rm -rf
 
@@ -36,8 +36,8 @@ fclean: clean
 
 re: fclean all
 
-# tsan: CFLAGS += -fsanitize=thread,undefined,float-divide-by-zero,unsigned-integer-overflow,implicit-conversion,local-bounds -g3 -O3 -fno-omit-frame-pointer
-# tsan: re
+tsan: CFLAGS += -fsanitize=thread,undefined,float-divide-by-zero,unsigned-integer-overflow,implicit-conversion,local-bounds -g3 -O3 -fno-omit-frame-pointer
+tsan: re
 
 # asan: CFLAGS += -fsanitize=address,undefined,float-divide-by-zero,unsigned-integer-overflow,implicit-conversion,local-bounds -g3 -O3 -fno-omit-frame-pointer
 # asan: re

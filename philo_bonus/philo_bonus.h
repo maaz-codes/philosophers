@@ -6,7 +6,7 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 18:49:01 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/23 17:09:24 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/26 20:35:56 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,9 +93,9 @@ typedef struct s_philo
 	int			own_fork;
 	int			other_fork;
 	int			philo_count;
-	int			time_to_die;
-	int			time_to_eat;
-	int			time_to_sleep;
+	long long	time_to_die;
+	long long	time_to_eat;
+	long long	time_to_sleep;
 	int			max_meals;
 	int			meal_count;
 	int			statiated;
@@ -133,7 +133,7 @@ int				thinking(t_info *info, t_philo *philo);
 
 // time.c
 long long		get_exact_time(void);
-int				precise_usleep(long usec, t_philo *philo);
+int				precise_usleep(long long usec, t_philo *philo);
 
 // utils.c
 void			write_sema(t_info *info, t_philo *philo, char *str);

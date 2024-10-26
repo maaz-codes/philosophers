@@ -6,7 +6,7 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 18:45:50 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/16 12:28:32 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/26 20:20:45 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	init_info(char *argv[], t_info *info)
 	info->start_program_time = get_exact_time();
 	info->philo_count = ft_atoi(argv[1]);
 	info->all_alive = TRUE;
-	info->eating = FALSE;
+	info->eating = TRUE;
 	info->meals_done = FALSE;
 	i = 0;
 	while (i < info->philo_count)
@@ -40,7 +40,7 @@ void	init_philos(char **argv, t_philo *philo, t_info *info)
 		philo[i].id = i + 1;
 		philo[i].spotlight = i + 1;
 		philo[i].philo_count = info->philo_count;
-		philo[i].own_fork = i; // philo->id
+		philo[i].own_fork = i;
 		philo[i].other_fork = (i + 1) % info->philo_count;
 		philo[i].time_to_die = ft_atoi(argv[2]);
 		philo[i].time_to_eat = ft_atoi(argv[3]);
@@ -51,6 +51,8 @@ void	init_philos(char **argv, t_philo *philo, t_info *info)
 			philo[i].max_meals = -1;
 		philo[i].meal_count = 0;
 		philo[i].statiated = FALSE;
+		philo[i].thinked = TRUE;
+		philo[i].slept = FALSE;
 		philo[i].start_time = get_exact_time();
 		i++;
 	}

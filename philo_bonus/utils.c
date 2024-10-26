@@ -6,7 +6,7 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/23 14:57:39 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/23 14:57:43 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/10/26 20:38:31 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@ void	write_sema(t_info *info, t_philo *philo, char *str)
 {
 	sem_wait(info->sema_write);
 	if (info->all_alive == TRUE && info->all_full == FALSE)
-		printf("%lld %i %s on light %i\n", get_exact_time()
-			- info->start_program_time, philo->id, str, philo->spotlight);
+		printf("%lld %i %s\n", get_exact_time()
+			- info->start_program_time, philo->id, str);
 	sem_post(info->sema_write);
 }
 
