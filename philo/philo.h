@@ -6,7 +6,7 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 18:49:01 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/26 20:22:46 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/11/04 18:32:22 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ typedef struct s_info
 	int				meals_done;
 	int				forks[MAX_PHILOS];
 	pthread_mutex_t	fork_locks[MAX_PHILOS];
+	pthread_mutex_t	f_register_locks[MAX_PHILOS];
 	pthread_mutex_t	print_lock;
 	pthread_mutex_t	eat_lock;
 	pthread_mutex_t	alive_lock;
@@ -121,9 +122,16 @@ void				create_thread(pthread_t *t, void *(*routine)(void *),
 void				join_thread(pthread_t *t);
 
 // routines
-void				eating(t_philo *philo, int i);
-void				sleeping(t_philo *philo);
-void				thinking(t_philo *philo);
+int					eating(t_philo *philo, int i);
+int					sleeping(t_philo *philo);
+int					thinking(t_philo *philo);
+
+// forks
+int					forks_available(t_philo *philo);
+void				register_forks(t_philo *philo);
+void				deregister_forks(t_philo *philo);
+void				grab_forks(t_philo *philo);
+void				release_forks(t_philo *philo);
 
 // dinning_table
 void				*dinning_table(void *args);

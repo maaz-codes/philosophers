@@ -6,7 +6,7 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 18:49:01 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/26 20:35:56 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/11/04 18:34:02 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,7 +146,7 @@ void			rotate_spotlight(t_philo *philo);
 void			release_thinkers(t_info *info, t_philo *philo);
 void			waiting(t_info *info);
 void			sema_close(t_info *info);
-void			sema_unlink(t_info *info);
+void			sema_unlink(void);
 
 // dinning.c
 void			dinning(t_philo *philo, t_info *info);

@@ -6,7 +6,7 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/23 14:49:20 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/26 20:18:07 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/11/04 18:34:29 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void	sema_close(t_info *info)
 	sem_close(info->sema_meals);
 }
 
-void	sema_unlink(t_info *info)
+void	sema_unlink(void)
 {
 	sem_unlink(SEMA_WRITE);
 	sem_unlink(SEMA_LIGHT);
@@ -62,5 +62,5 @@ void	waiting(t_info *info)
 		i++;
 	}
 	sema_close(info);
-	sema_unlink(info);
+	sema_unlink();
 }

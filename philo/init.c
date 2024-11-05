@@ -6,7 +6,7 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 18:45:50 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/26 20:20:45 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/11/04 18:20:13 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	init_info(char *argv[], t_info *info)
 	i = 0;
 	while (i < info->philo_count)
 	{
-		info->forks[i] = 0;
+		info->forks[i] = -1;
 		i++;
 	}
 }
@@ -72,6 +72,8 @@ void	init_mutexes(t_info *info, t_philo *philo)
 	while (i < info->philo_count)
 	{
 		if (pthread_mutex_init(&info->fork_locks[i], NULL) != 0)
+			ft_error(MUTEX_FAIL);
+		if (pthread_mutex_init(&info->f_register_locks[i], NULL) != 0)
 			ft_error(MUTEX_FAIL);
 		if (pthread_mutex_init(&info->reset_lock[i], NULL) != 0)
 			ft_error(MUTEX_FAIL);

@@ -14,8 +14,8 @@ SRC 		= 	philo_bonus.c \
 OBJ = $(SRC:.c=.o)
 
 CC = cc
-CFLAGS = # -Wall -Wextra
-LDFLAGS = -lpthread
+CFLAGS = -Wall -Wextra -Werror
+# LDFLAGS = -lpthread
 
 REM		=	rm -rf
 

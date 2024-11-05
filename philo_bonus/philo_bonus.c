@@ -6,7 +6,7 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/13 17:16:55 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/23 16:29:59 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/11/04 18:34:18 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ int	main(int argc, char *argv[])
 	t_info		info;
 	pthread_t	chef;
 
-	sema_unlink(&info);
+	sema_unlink();
 	if (argc == 5 || argc == 6)
 	{
 		parsing(argc, argv);
