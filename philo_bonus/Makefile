@@ -15,14 +15,13 @@ OBJ = $(SRC:.c=.o)
 
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
-# LDFLAGS = -lpthread
 
 REM		=	rm -rf
 
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	@$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
+	@$(CC) $(CFLAGS) $^ -o $@
 	@echo "\033[1;36m Table's Prepared🍽 \033[0m"
 
 %.o: %.c
@@ -35,11 +34,5 @@ fclean: clean
 	@$(REM) $(NAME)
 
 re: fclean all
-
-tsan: CFLAGS += -fsanitize=thread,undefined,float-divide-by-zero,unsigned-integer-overflow,implicit-conversion,local-bounds -g3 -O3 -fno-omit-frame-pointer
-tsan: re
-
-# asan: CFLAGS += -fsanitize=address,undefined,float-divide-by-zero,unsigned-integer-overflow,implicit-conversion,local-bounds -g3 -O3 -fno-omit-frame-pointer
-# asan: re
 
 .PHONY: all clean fclean re bonus

@@ -6,7 +6,7 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/23 14:53:31 by maakhan           #+#    #+#             */
-/*   Updated: 2024/10/26 20:42:13 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/11/09 13:53:02 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	massacre(t_philo *philo)
 	if (philo->info->dinner_ended == FALSE)
 	{
 		if (philo->info->all_alive == FALSE)
-			printf("%lld %i is Dead\n", get_exact_time()
+			printf("%lld %i died\n", get_exact_time()
 				- philo->info->start_program_time, philo->id);
 		sem_post(philo->info->sema_death);
 	}

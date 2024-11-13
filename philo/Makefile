@@ -16,7 +16,6 @@ OBJ = $(SRC:.c=.o)
 
 CC = cc 
 CFLAGS = -Wall -Wextra -Werror
-# LDFLAGS = -lpthread
 
 REM		=	rm -rf
 
@@ -28,9 +27,6 @@ $(NAME): $(OBJ)
 
 %.o: %.c
 	@$(CC) $(CFLAGS) -c $< -o $@
-
-# tsan: CFLAGS += -fsanitize=thread,undefined,float-divide-by-zero,unsigned-integer-overflow,implicit-conversion,local-bounds -g3 -O3 -fno-omit-frame-pointer
-# tsan: re
 
 clean: 
 	@$(REM) $(OBJ)

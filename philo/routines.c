@@ -6,11 +6,29 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 18:06:50 by maakhan           #+#    #+#             */
-/*   Updated: 2024/11/04 18:22:41 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/11/12 18:20:29 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+static int	philo_eating(t_philo *philo)
+{
+	if (!precise_usleep(philo, (philo->time_to_eat * 0.25) * 1000))
+	{
+		release_forks(philo);
+		deregister_forks(philo);
+		return (0);
+	}
+	register_forks(philo);
+	if (!precise_usleep(philo, (philo->time_to_eat * 0.75) * 1000))
+	{
+		release_forks(philo);
+		deregister_forks(philo);
+		return (0);
+	}
+	return (1);
+}
 
 int	sleeping(t_philo *philo)
 {
@@ -46,10 +64,8 @@ int	eating(t_philo *philo, int i)
 	{
 		grab_forks(philo);
 		write_lock(philo->info, philo, "is eating");
-		if (!precise_usleep(philo, (philo->time_to_eat * 0.25) * 1000))
+		if (!philo_eating(philo))
 			return (0);
-		register_forks(philo);
-		precise_usleep(philo, (philo->time_to_eat * 0.75) * 1000);
 		release_forks(philo);
 		deregister_forks(philo);
 		pthread_mutex_lock(&philo->info->reset_lock[i]);

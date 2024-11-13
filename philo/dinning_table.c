@@ -6,7 +6,7 @@
 /*   By: maakhan <maakhan@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 14:25:48 by maakhan           #+#    #+#             */
-/*   Updated: 2024/11/04 18:31:57 by maakhan          ###   ########.fr       */
+/*   Updated: 2024/11/09 13:59:36 by maakhan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,9 @@ void	*dinning_table(void *args)
 		if (spotlight(philo) == ON)
 		{
 			if (!eating(philo, philo->id - 1))
+			{
 				return (NULL);
+			}
 			if (!sleeping(philo))
 				return (NULL);
 		}
